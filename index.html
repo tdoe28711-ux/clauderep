@@ -18,6 +18,7 @@
   --uni:#B24418; --uni-t:#FBDCC7;
   --nest:#12352A; --nest-t:#93D6B7;
   --tp:#3A2266;   --tp-t:#D0B6F2;
+  --sec:#14223F;  --sec-t:#C3CFF0;
   --ease:cubic-bezier(.2,.7,.3,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -66,6 +67,11 @@ h1 .hl{color:var(--uni)}
 .p1{background:var(--uni);color:var(--uni-t)}
 .p2{background:var(--nest);color:var(--nest-t)}
 .p3{background:var(--tp);color:var(--tp-t)}
+.p4{background:var(--sec);color:var(--sec-t)}
+.duo{display:grid;grid-template-columns:.31fr .69fr;gap:10px;padding:10px}
+.duo img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+.duo img.poster{object-fit:contain;background:#0B0F1E}
+.duo img.live{object-position:50% 40%}
 .panel .grid{display:grid;grid-template-columns:1fr .88fr;gap:46px;align-items:center}
 .panel .tag{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;opacity:.72;margin-bottom:24px}
 .panel h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(25px,3.5vw,46px);line-height:1.05;letter-spacing:-.022em;max-width:17ch}
@@ -80,21 +86,6 @@ h1 .hl{color:var(--uni)}
 .shot{aspect-ratio:4/3;border-radius:10px;background:rgba(255,255,255,.08);overflow:hidden}
 .shot img{width:100%;height:100%;object-fit:cover}
 
-.poster-card{background:#0E0D10;color:#E9E6E0;border-radius:16px;padding:48px;overflow:hidden}
-.poster-card .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:start}
-.poster-card .tag{font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:#E2524A;margin-bottom:24px}
-.poster-card h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(25px,3.5vw,46px);line-height:1.05;letter-spacing:-.022em;max-width:17ch}
-.poster-card .meta{margin-top:20px;font-size:15px;color:rgba(233,230,224,.72);max-width:46ch;line-height:1.6}
-.poster-card .chips{color:rgba(233,230,224,.9)}
-.poster-card .photos{margin-top:36px;display:grid;grid-template-columns:1.35fr 1fr;gap:12px}
-.poster-card figure{border-radius:10px;overflow:hidden;background:rgba(255,255,255,.06)}
-.poster-card figure img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4}
-.poster-card figure.wide img{aspect-ratio:auto;height:100%;object-position:50% 85%}
-.poster-card figure:not(.wide) img{object-position:50% 40%}
-.poster-card figcaption,.poster-card .cap{font-size:12px;color:rgba(233,230,224,.55);margin-top:10px}
-.poster-card .poster{display:block;border-radius:10px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);transition:transform .5s var(--ease)}
-.poster-card .poster:hover{transform:translateY(-6px)}
-@media (max-width:900px){.poster-card{padding:30px 24px}.poster-card .grid{grid-template-columns:1fr;gap:30px}.poster-card .photos{grid-template-columns:1fr}.poster-card figure img{aspect-ratio:4/3}}
 .now{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:48px;position:relative}
 .now .flag{display:inline-flex;align-items:center;gap:9px;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-bottom:24px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--uni);animation:pulse 2.4s ease-in-out infinite}
@@ -205,30 +196,6 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
 
 <div class="panels">
 
-  <div class="poster-card rev">
-    <div class="grid">
-      <div>
-        <p class="tag">SEC Today Live — poster design, 2026</p>
-        <h3>A stadium-scale poster for ESPN&rsquo;s SEC Network</h3>
-        <p class="meta">Promotional poster for <em>SEC Today Live</em>, the ESPN SEC Network show carried on SiriusXM radio, broadcast live from Oxford, Mississippi during LSU vs. Ole Miss week and hosted by Chris Doering and Peter Burns. It was printed as full-height banners that framed the live set at The Library, with the event details and six sponsors built into the layout.</p>
-        <div class="chips">
-          <span class="chip">Poster design</span>
-          <span class="chip">Large-format print</span>
-          <span class="chip">Sponsor layout</span>
-        </div>
-        <div class="photos">
-          <figure class="wide"><img src="images/sec/hosts-live.jpg" alt="Hosts Chris Doering and Peter Burns broadcasting live beside the SEC Today Live banner" loading="lazy"></figure>
-          <figure><img src="images/sec/banner-in-venue.jpg" alt="The printed SEC Today Live banner standing at the entrance of The Library in Oxford" loading="lazy"></figure>
-        </div>
-        <p class="cap">On-site at The Library, Oxford, MS.</p>
-      </div>
-      <div>
-        <a class="poster" href="images/sec/poster-full.jpg" target="_blank" rel="noopener"><img src="images/sec/poster.jpg" alt="SEC Today Live poster: stadium with fireworks, hosts seated on a couch holding footballs, event details and sponsor logos" loading="lazy"></a>
-        <p class="cap">Final poster — click to view full size.</p>
-      </div>
-    </div>
-  </div>
-
   <a class='panel p1 rev' href='/unipal'>
     <div class="grid">
       <div>
@@ -277,6 +244,26 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
         <span class="go">View case study <i>&rarr;</i></span>
       </div>
       <div class="shot"><img src="images/treylor/hero-pizza-box.jpg" alt="Treylor Park Pizza Party packaging"></div>
+    </div>
+  </a>
+
+  <a class='panel p4 rev' href='images/sec/poster-full.jpg' target='_blank' rel='noopener'>
+    <div class="grid">
+      <div>
+        <p class="tag">SEC Today Live — poster design, 2026</p>
+        <h3>A stadium-scale poster for ESPN&rsquo;s SEC Network</h3>
+        <p class="meta">Promo poster for the SEC Network show on SiriusXM, live from Oxford for LSU vs. Ole Miss week. Printed as full-height banners that framed the live set.</p>
+        <div class="chips">
+          <span class="chip">Poster design</span>
+          <span class="chip">Large-format print</span>
+          <span class="chip">Six sponsors</span>
+        </div>
+        <span class="go">View full poster <i>&rarr;</i></span>
+      </div>
+      <div class="shot duo">
+        <img class="poster" src="images/sec/poster.jpg" alt="SEC Today Live poster: stadium with fireworks, hosts holding footballs, event details and sponsor logos" loading="lazy">
+        <img class="live" src="images/sec/hosts-live.jpg" alt="Hosts Chris Doering and Peter Burns broadcasting live beside the printed banner at The Library, Oxford" loading="lazy">
+      </div>
     </div>
   </a>
 
