@@ -1,0 +1,4 @@
+.pt body{opacity:0;transform:translateY(8px);transition:opacity .42s ease,transform .42s cubic-bezier(.2,.7,.3,1)}
+.pt.pt-in body{opacity:1;transform:none}
+.pt.pt-out body{opacity:0;transform:translateY(-8px);transition-duration:.3s}
+@media (prefers-reduced-motion:reduce){.pt body,.pt.pt-out body{opacity:1!important;transform:none!important;transition:none!important}}

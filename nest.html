@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nest Thermostat Redesign — Green & Affordable — Tyson Doering</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="transition.css">
+</head>
+<body>
+<header class="site" id="hdr"><div class="wrap">
+  <a class='logo' href='/'>Tyson Doering</a>
+  <nav class="top">
+    <a class='hide-m' href='/#work'>Work</a>
+    <a class='hide-m' href='/#about'>About</a>
+    <a class="pill dark" href="mailto:tdoe28711@gmail.com">Email me</a>
+  </nav>
+</div></header>
+<article class="case">
+  <div class="case-inner">
+    <a class='crumb' href='/#work'>← All work</a>
+    <div style="margin-top:24px"><span class="kicker">Product UX · Usability Testing</span></div>
+    <h1>Nest Thermostat Redesign — Green &amp; Affordable</h1>
+<p><strong>Role: Design Lead</strong> · 7-person team · 10 weeks · UXDG 315</p>
+<p><img alt="Hero — Green &amp; Affordable executive summary" src="images/nest/hero-executive-summary.png" /></p>
+
+<h2>Overview</h2>
+<p>The Nest thermostat's cluttered interface buried the features that matter most — scheduling and energy insight. Over 10 weeks, our seven-person team redesigned both the Nest device UI and its companion app around a single idea: make saving energy and money visible and effortless. As Design Lead, I drove screen design across both form factors and ran moderated usability tests — 12 sessions measuring task time, tap counts, and SUS — whose findings directly shaped the final designs, component libraries, and style guide.</p>
+
+<h2>The problem</h2>
+<p>A cloud of confusion and clustered interfaces was blocking users from the parts of Nest that matter most — including key features like the schedule. The interface didn't communicate real-time savings or eco-friendly choices, so users struggled to manage energy use, leading to higher costs and unnecessary consumption.</p>
+<p>Our audience: homeowners who want to be conscious and proactive about their energy use and spending — people looking to cut both consumption and cost without making it a second job.</p>
+<p><img alt="The original Nest schedule" src="images/nest/orig-vs-ours-app-schedule.png" /></p>
+<p><strong>How might we</strong> simplify the current Nest interfaces to increase usability and easily communicate ways the user can improve their environmental impact and save money?</p>
+
+<h2>Constraints</h2>
+<p>We worked within three fixed boundaries: the existing Nest hardware (round display, dial interaction), the established Home / Nav / Schedule structure, and parity with the companion app. Designing inside real product constraints — rather than a blank canvas — shaped every decision that follows.</p>
+<p><img alt="Constraints" src="images/nest/constraints.png" /></p>
+
+<h2>Process</h2>
+<p>We started wide: 360+ visual references consolidated to 60, then to 5 final directions, which we distilled into design directives — a 2:1 header-to-body ratio, flat design style, grid layouts, sans-serif type, and data made visual. From there, sketches became wireframes for both form factors.</p>
+<p><img alt="360+ references consolidated" src="images/nest/process-moodboard.png" />
+<img alt="Initial sketches" src="images/nest/process-sketches.png" />
+<img alt="Design directives" src="images/nest/process-directives.png" />
+<img alt="iPhone wireframes" src="images/nest/wireframes-iphone.png" />
+<img alt="Nest wireframes" src="images/nest/wireframes-nest.png" /></p>
+
+<h2>Testing</h2>
+<p>We ran 12 moderated usability sessions — 7 on the iPhone app prototype, 5 on the Nest device prototype — with four task scenarios each, measuring completion time, tap counts, and System Usability Scale scores.</p>
+<ul>
+<li><strong>App: 73.5% overall SUS</strong></li>
+<li><strong>Device: 68.3% overall SUS</strong></li>
+</ul>
+<p><img alt="iPhone task results" src="images/nest/testing-results-iphone.png" />
+<img alt="Nest task results" src="images/nest/testing-results-nest.png" /></p>
+<p>The scores were only the starting point. The value was in what individual sessions showed us.</p>
+
+<h2>What testing changed</h2>
+<p><strong>1. The buried preset library.</strong> Testers repeatedly failed to find the schedule preset library — it took the longest of any app task (21.8s average) despite needing among the fewest taps (5.6). The problem wasn't efficiency; it was discoverability. We surfaced the library directly on the schedule screen as a persistent action, so presets became a visible feature instead of a hidden one.</p>
+<p><img alt="App schedule — original vs ours" src="images/nest/final-app-schedule.png" /></p>
+<p><strong>2. An overwhelming home screen.</strong> Users hesitated on the app home — too many controls competing at once. We rebuilt the information architecture around one primary decision (current temp and eco suggestion up top) with insights demoted to glanceable cards below. The result is a home screen you can act on in one glance and dig into by choice.</p>
+<p><img alt="App home — original vs ours" src="images/nest/orig-vs-ours-app-home.png" /></p>
+<p><strong>3. The long road to changing the temperature.</strong> On the Nest itself, the journey from home screen to editing a scheduled temperature was our worst-tested flow — 27.6 seconds and 12.6 taps on average. We flattened the menu structure and redesigned day navigation so schedule editing sits one deliberate gesture from home instead of buried in nested menus.</p>
+<p><img alt="Nest schedule — original vs ours" src="images/nest/orig-vs-ours-nest-schedule.png" /></p>
+<p><strong>4. "Can I tap this?"</strong> Across both interfaces, testers couldn't reliably tell status displays from interactive controls. We built explicit visual states into the component libraries — normal, focused, hovered, active — so every element signals whether it's information or invitation. This finding is why our component libraries exist at the scale they do.</p>
+<p><img alt="Component states" src="images/nest/components-nest-1.png" /></p>
+
+<h2>Final designs</h2>
+<p><img alt="Original vs ours — app home" src="images/nest/orig-vs-ours-app-home.png" />
+<img alt="Final app home" src="images/nest/final-app-home.png" />
+<img alt="Original vs ours — Nest home" src="images/nest/orig-vs-ours-nest-home.png" />
+<img alt="Final Nest home" src="images/nest/final-nest-home.png" />
+<img alt="Final Nest schedule" src="images/nest/final-nest-schedule.png" /></p>
+<p>The redesigned system centers energy awareness: eco suggestions on every temperature control, daily insight cards (hours, kWh, dollars saved), weekly insight graphs, and an activity-based scheduling model that matches how people actually live — work, sleep, yoga, plant hour — rather than raw time grids.</p>
+<p><img alt="Nest components" src="images/nest/components-nest-2.png" />
+<img alt="App components" src="images/nest/components-app-1.png" />
+<img alt="App components cont." src="images/nest/components-app-2.png" />
+<img alt="Style guide — colors and typography" src="images/nest/style-guide-1.jpg" /></p>
+
+<h2>Business framing</h2>
+<p>The redesign requires only minor development cost (defining eco-temperature ranges) and no revenue-model changes, while increasing customer energy savings — improvement that pays for itself in retention and brand value rather than new infrastructure.</p>
+
+<h2>My role</h2>
+<p>As Design Lead on a seven-person team, I was responsible for the design direction holding together across both form factors — the shared language between the Nest device UI and the iPhone app. The work itself was genuinely collaborative: we all contributed across wireframing, prototyping, and testing. My deepest hands-on involvement was in screen design and wireframes for both interfaces and in running usability sessions, where I administered task scenarios and captured the timing, tap-count, and SUS data that drove our redesign decisions.</p>
+
+<h2>Reflection</h2>
+<p>If I ran this project again, I'd close the loop we opened: our SUS scores benchmarked the prototypes, but we didn't retest after the final redesign to measure the lift our changes produced. Building that second round into the schedule is the single change that would make the evidence airtight — and it's the first thing I'd scope in a professional setting.</p>
+  </div>
+  <div class="case-next"><a href='/treylor-park'>Next case study: Treylor Park →</a></div>
+</article>
+<div class="wrap"><div class="cta-card">
+  <h2>Questions about this work?</h2>
+  <p>I'm happy to walk through the decisions, the data, and what I'd do differently.</p>
+  <a class="pill dark" href="mailto:tdoe28711@gmail.com">Email me</a>
+</div></div>
+<footer class="site"><div class="wrap"><span>© 2026 Tyson Doering</span><span>Savannah, GA</span></div></footer>
+<script>
+const h=document.getElementById('hdr');
+addEventListener('scroll',()=>h.classList.toggle('scrolled',scrollY>10),{passive:true});
+</script>
+<script src="transition.js"></script>
+</body></html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tyson Doering — UX Designer</title>
+<meta name="description" content="Tyson Doering is a UX designer at SCAD who leads design teams and validates the work with real usability testing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F2EE;
+  --ink:#111110;
+  --soft:#6C6961;
+  --line:rgba(17,17,16,.13);
+  --card:#FFFFFF;
+  --uni:#B24418; --uni-t:#FBDCC7;
+  --nest:#12352A; --nest-t:#93D6B7;
+  --tp:#3A2266;   --tp-t:#D0B6F2;
+  --ease:cubic-bezier(.2,.7,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+.mono{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(243,242,238,.88);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:transform .45s var(--ease),border-color .3s ease}
+nav.hide{transform:translateY(-100%)}
+nav.stuck{border-color:var(--line)}
+.nav-in{max-width:1240px;margin:0 auto;padding:15px 40px;display:flex;justify-content:space-between;align-items:center}
+.nav-in .name{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-.02em;font-size:16px;text-decoration:none}
+.nav-in .links{display:flex;align-items:center;gap:26px}
+.nav-in .links a{text-decoration:none;font-size:14px;color:var(--soft)}
+.nav-in .links a:hover{color:var(--ink)}
+.btn{background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:999px;font-size:14px;font-weight:500;text-decoration:none;display:inline-block;transition:opacity .25s ease}
+.btn:hover{opacity:.82}
+
+.hero{padding:170px 0 0}
+.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#E3E1DA;margin-bottom:26px}
+.hey{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-bottom:26px}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(40px,6.6vw,94px);line-height:1;letter-spacing:-.028em;max-width:18ch}
+h1 .hl{color:var(--uni)}
+.ln{display:block;overflow:hidden;padding-bottom:.06em}
+.ln>span{display:block;transform:translateY(108%);transition:transform .9s var(--ease)}
+.ready .ln>span{transform:none}
+.ready .ln:nth-of-type(2)>span{transition-delay:.08s}
+.ready .ln:nth-of-type(3)>span{transition-delay:.16s}
+.hero-lower{display:flex;gap:44px;align-items:flex-end;justify-content:space-between;margin-top:46px;flex-wrap:wrap}
+.hero-lower p{font-size:clamp(16px,1.55vw,19px);line-height:1.55;max-width:52ch;color:var(--soft)}
+.ctas{display:flex;gap:12px}
+.pill-l{border:1px solid var(--line);padding:9px 18px;border-radius:999px;font-size:14px;font-weight:500;text-decoration:none;transition:border-color .25s ease}
+.pill-l:hover{border-color:var(--ink)}
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;margin-top:80px;display:flex;gap:44px;flex-wrap:wrap}
+.strip span{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft)}
+
+.sec-head{padding:104px 0 32px;display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap}
+.sec-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,4.4vw,56px);letter-spacing:-.024em;line-height:1}
+
+.panels{display:flex;flex-direction:column;gap:16px}
+.panel{display:block;text-decoration:none;border-radius:16px;overflow:hidden;padding:48px;transition:transform .5s var(--ease)}
+.panel:hover{transform:translateY(-6px)}
+.p1{background:var(--uni);color:var(--uni-t)}
+.p2{background:var(--nest);color:var(--nest-t)}
+.p3{background:var(--tp);color:var(--tp-t)}
+.panel .grid{display:grid;grid-template-columns:1fr .88fr;gap:46px;align-items:center}
+.panel .tag{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;opacity:.72;margin-bottom:24px}
+.panel h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(25px,3.5vw,46px);line-height:1.05;letter-spacing:-.022em;max-width:17ch}
+.panel .meta{margin-top:20px;font-size:15px;opacity:.8;max-width:42ch;line-height:1.55}
+.chips{margin-top:24px;display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid currentColor;opacity:.62;border-radius:999px;padding:5px 12px;font-size:12px;letter-spacing:.02em}
+.chip.win{opacity:1;background:currentColor;border-color:transparent}
+.chip.win b{font-weight:500;mix-blend-mode:difference}
+.go{margin-top:32px;display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:500;border-bottom:1px solid currentColor;padding-bottom:3px}
+.go i{font-style:normal;transition:transform .35s var(--ease)}
+.panel:hover .go i{transform:translateX(5px)}
+.shot{aspect-ratio:4/3;border-radius:10px;background:rgba(255,255,255,.08);overflow:hidden}
+.shot img{width:100%;height:100%;object-fit:cover}
+
+.now{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:48px;position:relative}
+.now .flag{display:inline-flex;align-items:center;gap:9px;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-bottom:24px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--uni);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.28}}
+.now h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(25px,3.5vw,46px);line-height:1.05;letter-spacing:-.022em;max-width:19ch}
+.now .grid{display:grid;grid-template-columns:1fr .78fr;gap:52px;align-items:start}
+.now p{margin-top:20px;font-size:16px;color:var(--soft);line-height:1.62;max-width:48ch}
+.steps{border-left:1px solid var(--line);padding-left:26px;display:flex;flex-direction:column;gap:20px}
+.step h5{font-family:'Fraunces',serif;font-weight:600;font-size:15px;letter-spacing:-.015em;margin-bottom:5px}
+.step p{margin:0;font-size:14px;max-width:none}
+.step.done h5::after{content:" \2713";color:var(--uni)}
+@media (max-width:900px){.now{padding:30px 24px}.now .grid{grid-template-columns:1fr;gap:30px}.steps{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:24px}}
+.about{padding:120px 0 0}
+.lead{display:grid;grid-template-columns:1.55fr .95fr;gap:64px;align-items:end;margin-top:36px}
+.lead h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,5.1vw,66px);letter-spacing:-.026em;line-height:1.02;max-width:20ch}
+.lead .aside{border-left:1px solid var(--line);padding-left:28px}
+.lead .aside p{font-size:17px;color:var(--soft);line-height:1.6}
+.bento{margin-top:56px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;display:flex;flex-direction:column;transition:transform .45s var(--ease),border-color .3s ease}
+.tile:hover{transform:translateY(-4px);border-color:rgba(17,17,16,.28)}
+.tile .lab{font-family:'Work Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:22px}
+.tile h4{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.022em;margin-bottom:12px;line-height:1.15}
+.tile p{font-size:15px;color:var(--soft);line-height:1.6}
+.tile.dark{background:var(--ink);border-color:var(--ink)}
+.tile.dark .lab{color:rgba(243,242,238,.55)}
+.tile.dark h4{color:var(--bg)}
+.tile.dark p{color:rgba(243,242,238,.7)}
+.tile.dark:hover{border-color:var(--ink)}
+.cta-card{margin-top:120px;background:var(--ink);color:var(--bg);border-radius:20px;padding:76px 48px;text-align:center}
+.cta-card .avail{display:inline-flex;align-items:center;gap:9px;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#B8B5AC;margin-bottom:26px}
+.cta-card .avail .dot{background:#7FD1A6}
+.cta-card .avatar{margin:0 auto 24px;width:64px;height:64px}
+.cta-card h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(34px,5.4vw,66px);letter-spacing:-.026em;line-height:1}
+.cta-card p{margin:22px auto 34px;max-width:50ch;font-size:17px;line-height:1.62;color:#DAD8D1}
+.cta-card .btn{background:var(--bg);color:var(--ink)}
+
+footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft)}
+
+.rev{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s var(--ease)}
+.rev.in{opacity:1;transform:none}
+
+@media (max-width:1000px){
+  .lead{grid-template-columns:1fr;gap:26px;align-items:start}
+  .lead .aside{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:22px}
+}
+@media (max-width:900px){
+  .wrap{padding:0 20px}
+  .nav-in{padding:13px 20px}
+  .nav-in .links a.hide-m{display:none}
+  .hero{padding:128px 0 0}
+  .panel{padding:30px 24px}
+  .panel .grid{grid-template-columns:1fr;gap:26px}
+  .bento{grid-template-columns:1fr}
+  .cta-card{padding:52px 24px}
+  .strip{gap:18px;flex-direction:column}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .ln>span{transform:none}
+  .rev{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+<link rel="stylesheet" href="transition.css">
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-in">
+    <a class='name' href='/'>Tyson Doering</a>
+    <span class="links">
+      <a href="#work" class="hide-m">Work</a>
+      <a href="#now" class="hide-m">Now</a>
+      <a href="#about" class="hide-m">About</a>
+      <a class="btn" href="mailto:tdoe28711@gmail.com">Email me</a>
+    </span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="hero" id="hero">
+  <img class="avatar" src="images/headshot.jpg" alt="Tyson Doering" width="80" height="80">
+  <div class="hey">Hello, I'm Tyson Doering</div>
+  <h1>
+    <span class="ln"><span>I create digital</span></span>
+    <span class="ln"><span>experiences with a goal</span></span>
+    <span class="ln"><span>to <span class="hl">improve everyday life</span>.</span></span>
+  </h1>
+  <div class="hero-lower">
+    <p>I'm a UX designer at SCAD. I've led design on an internationally awarded app and a two-platform product redesign — and I put every design in front of real people before I call it done.</p>
+    <div class="ctas">
+      <a class="btn" href="mailto:tdoe28711@gmail.com">Email me</a>
+      <a class="pill-l" href="#work">See my work</a>
+    </div>
+  </div>
+  <div class="strip">
+    <span>SCAD — UX design</span>
+    <span>European Product Design Award, 2025</span>
+    <span>Savannah, GA</span>
+  </div>
+</header>
+
+<section class="sec-head rev" id="work">
+  <h2>Featured work</h2>
+  <span class="mono">Three case studies</span>
+</section>
+
+<div class="panels">
+
+  <a class='panel p1 rev' href='/unipal'>
+    <div class="grid">
+      <div>
+        <p class="tag">Uni-Pal — UX design lead, 2025</p>
+        <h3>Helping college students eat well on a student budget</h3>
+        <p class="meta">Research-driven flows, wireframes, and moderated testing for an affordable-eating app. Average SUS of 78.75 across sessions.</p>
+        <div class="chips">
+          <span class="chip win"><b>European Product Design Award 2025</b></span>
+          <span class="chip">UX research</span>
+          <span class="chip">SUS 78.75</span>
+        </div>
+        <span class="go">View case study <i>&rarr;</i></span>
+      </div>
+      <div class="shot"><img src="images/unipal/hero-lineup.jpg" alt="Uni-Pal healthy eating app"></div>
+    </div>
+  </a>
+
+  <a class='panel p2 rev' href='/nest'>
+    <div class="grid">
+      <div>
+        <p class="tag">Nest thermostat — design lead, 2025</p>
+        <h3>Making a thermostat show what energy actually costs</h3>
+        <p class="meta">Device and app redesigned around energy and cost insight, validated across 12 moderated usability sessions.</p>
+        <div class="chips">
+          <span class="chip">Product UX</span>
+          <span class="chip">Usability testing</span>
+          <span class="chip">Design systems</span>
+        </div>
+        <span class="go">View case study <i>&rarr;</i></span>
+      </div>
+      <div class="shot"><img src="images/nest/hero-executive-summary.png" alt="Nest thermostat redesign"></div>
+    </div>
+  </a>
+
+  <a class='panel p3 rev' href='/treylor-park'>
+    <div class="grid">
+      <div>
+        <p class="tag">Treylor Park Pizza Party — designer, 2024</p>
+        <h3>A retro campaign and merch system for a real Savannah client</h3>
+        <p class="meta">Apparel, packaging, and tote design built on survey, interview, and competitor research.</p>
+        <div class="chips">
+          <span class="chip">Brand design</span>
+          <span class="chip">Packaging</span>
+          <span class="chip">Real client</span>
+        </div>
+        <span class="go">View case study <i>&rarr;</i></span>
+      </div>
+      <div class="shot"><img src="images/treylor/hero-pizza-box.jpg" alt="Treylor Park Pizza Party packaging"></div>
+    </div>
+  </a>
+
+</div>
+
+<section class="sec-head rev" id="now">
+  <h2>What I'm working on</h2>
+  <span class="mono">In progress</span>
+</section>
+
+<div class="now rev">
+  <div class="grid">
+    <div>
+      <span class="flag"><span class="dot"></span> Self-directed research — 2026</span>
+      <h3>What happens to athletes after the game ends</h3>
+      <p>Professional athletes spend a career inside a structure that schedules their days, defines their identity, and disappears the moment they stop playing. I'm researching that transition directly with retired players to find out where the existing support actually breaks down.</p>
+      <p>This one didn't come from a brief. I grew up in this world, and it's a problem I kept hearing about and couldn't find anyone designing for. The design direction will come from what the research says, not the other way around.</p>
+    </div>
+    <div class="steps">
+      <div class="step done">
+        <h5>Problem space defined</h5>
+        <p>Narrowed to post-professional transition after mapping the wider territory.</p>
+      </div>
+      <div class="step done">
+        <h5>Research instrument built</h5>
+        <p>A written study designed for a hard-to-reach group, with open-ended prompts and a support-rating scale.</p>
+      </div>
+      <div class="step">
+        <h5>Fieldwork</h5>
+        <p>Collecting responses from retired professional players.</p>
+      </div>
+      <div class="step">
+        <h5>Synthesis &amp; design</h5>
+        <p>Themes first, problem statement second, screens last.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="about" id="about">
+  <div class="sec-head rev" style="padding-bottom:0">
+    <h2>About me</h2>
+    <span class="mono">Savannah, GA</span>
+  </div>
+  <div class="lead rev">
+    <h3>I want to design and build things that improve people's lives and create an impactful change.</h3>
+    <div class="aside">
+      <p>Sport, fitness, and health are the industries where I hope to make that impact.</p>
+    </div>
+  </div>
+  <div class="bento rev">
+    <div class="tile dark">
+      <span class="lab">Background</span>
+      <h4>Raised in the sporting world</h4>
+      <p>My dad played nine seasons in the NFL, then built a career in sports media. I grew up around athletes and athletics &mdash; it's an industry I know from the inside out.</p>
+    </div>
+    <div class="tile">
+      <span class="lab">Daily life</span>
+      <h4>Athlete myself</h4>
+      <p>Sports and training are part of my daily life, which is exactly why I want to design for fitness, health, and performance organizations or products.</p>
+    </div>
+    <div class="tile">
+      <span class="lab">Side work</span>
+      <h4>I create, not just design</h4>
+      <p>In my off time I've built autonomous AI agents that scan markets, news, and SEC filings &mdash; my favorite systems-thinking playground.</p>
+    </div>
+    <div class="tile">
+      <span class="lab">Ongoing</span>
+      <h4>Always learning</h4>
+      <p>I'm constantly exploring emerging technologies, AI, and new design methods to build better digital experiences.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-card rev">
+  <img class="avatar" src="images/headshot.jpg" alt="Tyson Doering" width="64" height="64">
+  <span class="avail"><span class="dot"></span> Available for full-time roles</span>
+  <h2>Get in touch</h2>
+  <p>I'm currently looking for UX opportunities where I can contribute, learn, and help build products people genuinely enjoy using — especially in sport, fitness, and health.</p>
+  <a class="btn" href="mailto:tdoe28711@gmail.com">Email me</a>
+</section>
+
+<footer>
+  <span>&copy; 2026 Tyson Doering</span>
+  <span>Savannah, GA</span>
+</footer>
+
+</div>
+
+<script>
+requestAnimationFrame(()=>document.getElementById('hero').classList.add('ready'));
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.12});
+document.querySelectorAll('.rev').forEach(el=>io.observe(el));
+const nav=document.getElementById('nav');let last=0;
+addEventListener('scroll',()=>{const y=scrollY;nav.classList.toggle('stuck',y>10);nav.classList.toggle('hide',y>last&&y>340);last=y},{passive:true});
+</script>
+<script src="transition.js"></script>
+</body>
+</html>
