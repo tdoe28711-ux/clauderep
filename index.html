@@ -82,18 +82,8 @@ h1 .hl{color:var(--uni)}
 .shot{aspect-ratio:4/3;border-radius:10px;background:rgba(255,255,255,.08);overflow:hidden}
 .shot img{width:100%;height:100%;object-fit:cover}
 
-.now{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:48px;position:relative}
-.now .flag{display:inline-flex;align-items:center;gap:9px;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-bottom:24px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--uni);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.28}}
-.now h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(25px,3.5vw,46px);line-height:1.05;letter-spacing:-.022em;max-width:19ch}
-.now .grid{display:grid;grid-template-columns:1fr .78fr;gap:52px;align-items:start}
-.now p{margin-top:20px;font-size:16px;color:var(--soft);line-height:1.62;max-width:48ch}
-.steps{border-left:1px solid var(--line);padding-left:26px;display:flex;flex-direction:column;gap:20px}
-.step h5{font-family:'Fraunces',serif;font-weight:600;font-size:15px;letter-spacing:-.015em;margin-bottom:5px}
-.step p{margin:0;font-size:14px;max-width:none}
-.step.done h5::after{content:" \2713";color:var(--uni)}
-@media (max-width:900px){.now{padding:30px 24px}.now .grid{grid-template-columns:1fr;gap:30px}.steps{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:24px}}
 .about{padding:120px 0 0}
 .lead{display:grid;grid-template-columns:1.55fr .95fr;gap:64px;align-items:end;margin-top:36px}
 .lead h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,5.1vw,66px);letter-spacing:-.026em;line-height:1.02;max-width:20ch}
@@ -154,7 +144,6 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
     <a class='name' href='/'>Tyson Doering</a>
     <span class="links">
       <a href="#work" class="hide-m">Work</a>
-      <a href="#now" class="hide-m">Now</a>
       <a href="#about" class="hide-m">About</a>
       <a class="btn" href="mailto:tdoe28711@gmail.com">Email me</a>
     </span>
@@ -260,41 +249,6 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
     </div>
   </a>
 
-</div>
-
-
-<section class="sec-head rev" id="now">
-  <h2>What I'm working on</h2>
-  <span class="mono">In progress</span>
-</section>
-
-<div class="now rev">
-  <div class="grid">
-    <div>
-      <span class="flag"><span class="dot"></span> Self-directed research — 2026</span>
-      <h3>What happens to athletes after the game ends</h3>
-      <p>Professional athletes spend a career inside a structure that schedules their days, defines their identity, and disappears the moment they stop playing. I'm researching that transition directly with retired players to find out where the existing support actually breaks down.</p>
-      <p>This one didn't come from a brief. I grew up in this world, and it's a problem I kept hearing about and couldn't find anyone designing for. The design direction will come from what the research says, not the other way around.</p>
-    </div>
-    <div class="steps">
-      <div class="step done">
-        <h5>Problem space defined</h5>
-        <p>Narrowed to post-professional transition after mapping the wider territory.</p>
-      </div>
-      <div class="step done">
-        <h5>Research instrument built</h5>
-        <p>A written study designed for a hard-to-reach group, with open-ended prompts and a support-rating scale.</p>
-      </div>
-      <div class="step">
-        <h5>Fieldwork</h5>
-        <p>Collecting responses from retired professional players.</p>
-      </div>
-      <div class="step">
-        <h5>Synthesis &amp; design</h5>
-        <p>Themes first, problem statement second, screens last.</p>
-      </div>
-    </div>
-  </div>
 </div>
 
 <section class="about" id="about">
