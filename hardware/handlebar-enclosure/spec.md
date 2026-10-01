@@ -137,16 +137,23 @@ Y runs side to side, Z runs up.
 
 ## 7. Handlebar mounting
 
+**Correction (2026-10-01):** the original 31.8mm / 720mm Wake MTB riser
+below was a placeholder. The bar actually purchased is a VUOZIP 7/8"
+(22mm) dirt bike handlebar set, aluminum, uniform 22mm diameter along its
+whole length (not an oversized 31.8mm center section tapering to 22mm
+grips). The throttle (FT76X half-twist) is confirmed 7/8"/22mm compatible.
+Overall bar width for this specific part is not yet confirmed from the
+listing - don't assume 720mm still holds.
+
 | Spec | Value |
 |---|---|
-| Bar clamp diameter | 31.8 mm |
-| Bar grip diameter | 22.2 mm |
-| Bar overall width | 720 mm (Wake 31.8 MTB riser) |
+| Bar clamp diameter | 22 mm (7/8") - was 31.8mm, corrected above |
+| Bar grip diameter | 22.2 mm (same tube, uniform diameter) |
+| Bar overall width | Unconfirmed for the VUOZIP set - was 720mm for the old Wake riser, don't carry that number forward |
 
-**Use a separate flat top plate for the clamps.** Two standard bar
-clamps spaced for a 720 mm bar span roughly 190 mm, which is wider than
-the enclosure. A separate plate solves this and matches the reference
-photo.
+**Use a separate flat top plate for the clamps.** This still matters even
+at 22mm - two clamps spaced for a wide bar span more than the enclosure is
+long. A separate plate solves this and matches the reference photo.
 
 Plate spec:
 - 210 × 110 mm, 6 mm thick
