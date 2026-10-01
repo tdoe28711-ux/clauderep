@@ -120,8 +120,8 @@ def inset(v, t, min_v=6.0):
     return max(v - t, min_v)
 
 def boolean_diff(mesh_a, mesh_b, fallback_label):
-    result = rg.Mesh.CreateBooleanDifference([mesh_a], [mesh_b])
-    if not result or len(result) == 0:
+    result = list(rg.Mesh.CreateBooleanDifference([mesh_a], [mesh_b]))
+    if len(result) == 0:
         print("WARNING: boolean difference failed for " + fallback_label + " - keeping previous mesh")
         return mesh_a
     merged = result[0]
