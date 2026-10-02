@@ -6,8 +6,9 @@ Concept massing study, not manufacturing-ready. Built from a 4-way parallel
 design pass (dragon-head nose, spine fins, scaled flanks, clawed haunches),
 then merged the two that actually worked.
 
-![Isometric + profile](renders/enclosure_4view.png)
-![Body detail (no plate)](renders/body_only_detail.png)
+![Isometric + profile](renders/enclosure_iso.png)
+![Side view](renders/enclosure_side.png)
+![Rear view - dorsal fins and cable port](renders/enclosure_rear.png)
 
 ## What's in this version
 
