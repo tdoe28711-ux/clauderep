@@ -1,15 +1,24 @@
 """
-Handlebar Demo Enclosure v3 - builds directly into the active Rhino document.
+Handlebar Demo Enclosure v5 "dragon shield" - builds directly into the
+active Rhino document.
 
 Run this INSIDE Rhino (ScriptEditor / EditPythonScript), not as a standalone
 .py - it uses RhinoCommon (Rhino.Geometry) and scriptcontext, which only
 exist inside Rhino's own Python. No pip installs needed.
 
-Matches generate_enclosure.py exactly: slim snout -> brow flare (two angled
-facets with a centerline groove) -> sharp horn -> flat pad -> twin dorsal
-fins -> tail taper -> blunt transom. Rear cable port, bezeled USB port on
-the left wall, separate chamfered top plate (110mm along the body, 210mm
-across it for the bar clamps).
+Angular/faceted shield shape: low tapered nose -> deep V-ridge (sharp
+groove down the centerline, reads as the glowing seam in the renders) ->
+two small front fins -> flat mounting pad -> V-ridge resumes behind the
+pad -> tail taper -> blunt transom. Rear cable port, bezeled USB port on
+the left wall, flat mounting plate sized generically for your actual bar
+clamps (not the specific hardware in the reference image - that was
+unrelated stock photography).
+
+Color it in Rhino's material/render panel: dark gunmetal body
+(~RGB 60,62,67), near-black top plate, and give the faces right along the
+centerline groove an emissive red/orange material for the glowing-seam
+look from the renders (select those faces with Rhino's "SelSubCrv" or by
+hand along the ridge, then assign a separate sub-object material).
 
 Edit STATIONS to change the taper/facet shape, then re-run (it clears its
 own layers first so re-running is safe).
@@ -22,30 +31,36 @@ import math
 
 # ---- envelope ---------------------------------------------------------
 L = 190.0
-PAD_Z = 59.0
-PAD_X0, PAD_X1 = 45.0, 145.0
+PAD_Z = 58.0
+PAD_X0, PAD_X1 = 50.0, 140.0
 WALL_T = 3.0
 
 # (x, bottom_hw, shoulder_hw, shoulder_z, ridge_hw, apex_z, groove)
 STATIONS = [
-    (0.0,    8, 11,  7,  4, 14, 0.0),
-    (14.0,  11, 15,  9,  6, 18, 1.5),
-    (25.0,  13, 18, 10,  7, 22, 3.0),
-    (35.0,  44, 58, 23, 18, 58, 12.0),
-    (40.0,  45, 58, 23,  4, 68,  2.0),
-    (45.0,  46, 58, 23, 40, 59,  0.0),
-    (145.0, 46, 58, 23, 40, 59,  0.0),
-    (170.0, 46, 58, 23, 40, 59,  0.0),
-    (182.0, 28, 36, 18, 14, 34,  0.0),
-    (190.0, 20, 24, 15,  9, 24,  0.0),
+    (0.0,    7,  9,  6,  3, 12,  0.0),   # nose tip - low, narrow, sharp
+    (14.0,  18, 24, 12,  7, 26,  7.0),   # nose rises, V starting to open
+    (28.0,  40, 54, 21, 13, 46, 16.0),   # shoulder widens, deep V
+    (38.0,  56, 64, 25, 10, 58, 24.0),   # tall sharp ridge peak before the pad - deepest V
+    (46.0,  60, 66, 26, 36, 60,  6.0),   # ridge closes fast into the flat deck
+    (50.0,  62, 66, 26, 40, 58,  0.0),   # pad front edge (flat)
+    (140.0, 60, 65, 26, 40, 58,  0.0),   # pad back edge (flat)
+    (150.0, 58, 64, 25, 11, 54, 18.0),   # ridge resumes behind the pad
+    (164.0, 48, 58, 23,  8, 46, 16.0),   # rear ridge peak
+    (178.0, 28, 36, 16, 10, 28,  8.0),   # tail taper
+    (190.0, 18, 22, 13,  7, 18,  0.0),   # blunt tail transom
 ]
 
-INNER_X_RANGE = (35.0, 170.0)
-FIN_SPECS = [(150.0, 12.0), (162.0, 15.0)]   # (x_center, proud_height) - rear flank only
+INNER_X_RANGE = (38.0, 164.0)
+FIN_SPECS = [(31.0, 9.0), (36.0, 11.0)]   # (x_center, proud_height) - front, nose side
 PORT_W, PORT_H, PORT_D = 16.0, 11.0, 14.0
 USB_W, USB_H = 14.0, 10.0
-USB_X, USB_Z = 62.0, 20.0
-PLATE_X, PLATE_Y, PLATE_T, PLATE_CHAMFER = 110.0, 210.0, 6.0, 10.0
+USB_X, USB_Z = 60.0, 20.0
+# generic flat mounting plate for the actual bars - not the specific
+# clamp/riser hardware in the reference image, which was unrelated stock
+# hardware. Bolt holes stay undrilled per spec - mark/drill after the
+# real clamps are in hand. w maps to body-X (sits on the ~90mm pad),
+# h maps to body-Y (spans side-to-side for the clamps).
+PLATE_X, PLATE_Y, PLATE_T, PLATE_CHAMFER = 100.0, 190.0, 6.0, 10.0
 
 # ---- geometry helpers ---------------------------------------------------
 def hept_pts(bw, sw, sz, rw, az, groove, floor_z=0.0):
@@ -137,8 +152,8 @@ def interp_station(x):
             return tuple(a[j] + t * (b[j] - a[j]) for j in range(5))
     return STATIONS[-1][1:6]
 
-def build_dorsal_fin(x_center, proud_height, base_half=6.0, apex_back_offset=2.5,
-                      thick_half=3.0, embed=1.5):
+def build_dorsal_fin(x_center, proud_height, base_half=5.5, apex_back_offset=2.0,
+                      thick_half=2.5, embed=1.5):
     bw, sw, sz, rw, az = interp_station(x_center)
     base_z = az - embed
     apex_z = az + proud_height
@@ -151,7 +166,6 @@ def build_dorsal_fin(x_center, proud_height, base_half=6.0, apex_back_offset=2.5
     mesh = rg.Mesh()
     for p in pts:
         mesh.Vertices.Add(p)
-    # two triangular end caps + three side quads (triangular prism, 6 verts: 0,1,2 front face / 3,4,5 back face)
     mesh.Faces.AddFace(0, 1, 2)
     mesh.Faces.AddFace(3, 5, 4)
     mesh.Faces.AddFace(0, 3, 4); mesh.Faces.AddFace(0, 4, 1)
@@ -225,8 +239,8 @@ for (fx, fh) in FIN_SPECS:
     fin = build_dorsal_fin(fx, fh)
     shell = boolean_union(shell, fin, "dorsal fin @ x=%.0f" % fx)
 
-# ---- top plate: 110mm along body-X (sits on the 100mm pad), 210mm along Y
-# (spans across the bar for two clamps ~190mm apart) ----------------------
+# ---- top plate: no rotation - w(100) maps to body-X (sits on the pad),
+# h(190) maps to body-Y (spans side-to-side for the bar clamps) ------------
 plate_pts = chamfered_rect_pts(PLATE_X, PLATE_Y, PLATE_CHAMFER)
 plate_cx = (PAD_X0 + PAD_X1) / 2.0
 plate = extrude_xy_polygon(plate_pts, PAD_Z, PAD_Z + PLATE_T, offset=(plate_cx, 0.0, 0.0))
@@ -243,8 +257,8 @@ def ensure_layer(name, color):
         sc.doc.Layers[idx].Color = color
     return idx
 
-body_layer = ensure_layer("Enclosure Body", sd.Color.FromArgb(176, 138, 92))
-plate_layer = ensure_layer("Top Plate", sd.Color.FromArgb(28, 28, 28))
+body_layer = ensure_layer("Enclosure Body", sd.Color.FromArgb(60, 62, 67))    # gunmetal
+plate_layer = ensure_layer("Top Plate", sd.Color.FromArgb(18, 18, 20))        # near-black
 
 body_attr = Rhino.DocObjects.ObjectAttributes()
 body_attr.LayerIndex = body_layer
@@ -263,3 +277,6 @@ print("Body mesh: valid=%s  volume=%.1f cm^3  (~%.0fg PLA)" %
 print("Top plate: valid=%s  volume=%.1f cm^3  (~%.0fg if printed - plywood/acrylic recommended instead)" %
       (plate.IsValid, plate.Volume() / 1000.0, plate.Volume() / 1000.0 * 1.24))
 print("Done - look on layers 'Enclosure Body' and 'Top Plate'.")
+print("Tip: select the faces straight down the centerline V and give them a")
+print("separate emissive red material (Rhino's sub-object material assign)")
+print("for the glowing-seam look from the renders.")

@@ -1,86 +1,84 @@
-# Handlebar Demo Enclosure — v3
+# Handlebar Demo Enclosure — v5 "dragon shield"
 
 Team Hero · UXDG 340
 
-Concept massing study, not manufacturing-ready. Built from a 4-way parallel
-design pass (dragon-head nose, spine fins, scaled flanks, clawed haunches),
-then merged the two that actually worked.
+Concept massing study, not manufacturing-ready. Third major direction after
+the faceted dragonhead/spinefin merge (v3) and a fully smooth sculpted pass
+(v4). This version comes from a specific reference image: dark gunmetal,
+angular faceted shield shape, a glowing red V-seam down the centerline,
+small dragon-fin accents near the nose.
 
-![Isometric + profile](renders/enclosure_iso.png)
+![3/4 view](renders/enclosure_corner.png)
+![Front view](renders/enclosure_front.png)
 ![Side view](renders/enclosure_side.png)
-![Rear view - dorsal fins and cable port](renders/enclosure_rear.png)
+![Top view](renders/enclosure_top.png)
 
 ## What's in this version
 
-- **Slim snout up front** (dragon-head candidate): nose tapers into one
-  dramatic brow flare with a centerline groove, then a sharp horn, before
-  flattening into the top pad.
-- **Twin dorsal fins at the rear** (spine-fin candidate): flank the pad on
-  the tail side, both faces well under the 45° overhang limit (32°/15° and
-  27°/12°).
-- **Dropped**: scaled-flank candidate (the "scales" turned out to actually
-  perforate the wall — daylight visible through the side in the render, not
-  a shallow texture) and clawed-haunches (broken, asymmetric spike cluster,
-  didn't read as a creature foot at all).
-- **USB port has a real bezel now.** Earlier version had it as a bare
-  floating rectangular hole — this one computes the hull's actual surface
-  offset at the cut location so the frame genuinely stands proud.
+- **Angular faceted shield body** — back to hard facets (not v4's smooth
+  curves), reusing the proven 7-point groove cross-section from v3.
+- **Sharp V-ridge down the centerline**, deepest right before the mounting
+  pad, giving the aggressive "face" read from the reference. Rendered with
+  a glowing red/orange seam along the groove.
+- **Two small fins near the nose**, echoing the reference's "ridge detail:
+  small fins for a dragon-like silhouette."
+- **Dark gunmetal body / near-black plate**, matching the reference's
+  material instead of the earlier tan/bronze PLA look.
+- **Generic flat mounting plate for the actual bars** — not the specific
+  riser/clamp hardware shown in the reference image, which was unrelated
+  stock photography. Plate is 100 × 190mm, bolt holes left undrilled per
+  spec (mark and drill once the real clamps are in hand).
+
+## A bug I found and fixed while building the Rhino version
+
+The first pass had the top plate rotated 90° by mistake (copied from an
+earlier version where that rotation dodged a different set of fins). That
+put the plate's long 190mm dimension along the body's length — hanging off
+both the nose and tail — instead of across the body for the bar clamps.
+Fixed before handing off the Rhino script; `generate_enclosure.py` and
+`rhino_build_enclosure.py` both have the corrected orientation.
 
 ## Numbers
 
 | | Value |
 |---|---|
-| Body mass (PLA) | 212g |
-| Body cost @ $22/kg | $4.66 |
-| Body bbox | 190 × 116 × 74mm |
-| Cavity | 135 × 90 × 56mm (target: 130 × 85 × 40) |
-| Top plate mass if printed | 170g — **recommend plywood/acrylic instead**, per spec section 7 |
-| Overhang checker | 38.1% of downward-facing area flagged |
+| Body mass (PLA) | 259g |
+| Body cost @ $22/kg | $5.69 |
+| Body bbox | 190 × 133 × 67mm |
+| Plate mass if printed | 140g — recommend plywood/acrylic instead |
+| Overhang checker | 41.5% of downward-facing area flagged |
+| Fin overhang angles | 35.5°/18.4° and 31.0°/15.6° (both under the 45° limit) |
 
-Body alone is well under the 300g budget. If the plate is also printed,
-212 + 170 = 382g, over budget — another reason to cut it from plywood or
-acrylic like the spec suggests.
+Body alone is well under the 300g budget.
 
-## The overhang number isn't what it looks like
+## Honest gaps
 
-38% sounds bad. It isn't a flaw in this candidate — it's inherent to the
-brief's own constraints taken together: the cavity has no floor (spec
-section 6), and the top pad has to be genuinely flat (spec section 6). That
-combination means the pad's underside is open air with nothing under it in
-the printed-and-assembled orientation. The overhang checker (a simple
-face-normal-angle test) correctly flags that flat span, but a flat
-horizontal span is a **bridge**, not a support-needing overhang — slicers
-handle those differently (cooling + speed, not supports). Ran the
-unmodified baseline through the same checker and got 40.5%, confirming
-this is baked into the shape the spec asks for, not something this
-iteration introduced.
-
-Real, disclosed risk: the pad spans roughly 90-100mm as an unsupported
-bridge. That's at the edge of what PLA bridges cleanly without supports.
-Worth a test print of just the pad region before committing to the full
-part, and worth checking your slicer's bridging settings (fan speed, flow).
+1. **Scale texture from the reference isn't modeled.** Real 3D scales at
+   that density would mean hundreds of tiny raised bumps — print-prohibitive
+   at this scale and not worth the wall-thickness/print-time cost. A
+   textured spray paint or vinyl wrap would get the same visual effect
+   physically. Spec itself says scales aren't required.
+2. **The red glow is a render effect, not geometry** — it's just how the
+   groove faces are colored in the preview. In Rhino, assign those
+   centerline faces a separate emissive/red material if you want the same
+   look (see the print statement at the end of `rhino_build_enclosure.py`).
+3. **Not slicer-checked.** The 41.5% overhang number is a simple
+   face-angle heuristic, not a real slice — check actual bridging before
+   printing.
+4. **USB port position (x=60mm, left wall) is still a placeholder** — spec
+   says decide the Uno's orientation first.
+5. Bar overall width is unconfirmed for the actual 7/8" clamp set (see
+   spec.md's correction note), so the plate's 190mm span is a reasonable
+   guess, not a measured fit.
 
 ## Files
 
-- `generate_enclosure.py` — Python/trimesh generator (edit `STATIONS` to
-  change the taper, `FIN_SPECS` for the fins)
+- `generate_enclosure.py` — Python/trimesh generator
 - `rhino_build_enclosure.py` — same geometry, pure RhinoCommon, builds
   directly into an open Rhino document (no pip installs needed)
-- `render.py` — shaded preview renderer
+- `render.py` — gunmetal/red-glow preview renderer
 - `body.stl`, `top_plate.stl` — current output meshes
 - `renders/` — preview images
 - `spec.md` — the team's build spec (one correction applied: section 7 bar
   diameter, see git history)
-
-## Still open / not verified
-
-1. **Not slicer-checked.** The overhang number above is a heuristic, not a
-   real slice. Check actual bridging and any steep facets before printing.
-2. **USB port position is still a placeholder** (x=62mm on the left wall).
-   Spec says decide the Uno's orientation first — that hasn't happened yet.
-3. **Horn/brow read is subtle** at this low-poly scale — closer to
-   "snouted tank" than unambiguously "dragon." Noted honestly by the agent
-   that built it; a sharper topology change (not just reshaping one
-   cross-section) would be needed to push further.
-4. Bar clamp bolt pattern, exact facet count/sharpness, and whether a
-   display mounts on top are all still open per spec section 8.
+- `PROJECT.md` — team/project context
