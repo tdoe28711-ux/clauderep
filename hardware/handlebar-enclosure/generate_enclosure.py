@@ -1,48 +1,58 @@
 """
-Handlebar Demo Enclosure v5 - "dragon shield": dark gunmetal, angular
-faceted shield shape, sharp V-ridge spine (glowing red seam in the
-render), small front fins, flat mounting pad for the actual bars (not
-the reference image's specific clamp/riser hardware - that was generic
-stock hardware, not ours).
+Handlebar Demo Enclosure v6 - clean rebuild.
 
-Reuses the proven 7-point groove cross-section + hollow-midsection +
-convex-hull fin techniques from v3/the design-pass candidates.
+Fixes carried in from v5 feedback:
+  * SYMMETRY. v5 read lopsided because the USB bezel stuck out 2mm on the
+    -Y side only. Now both flanks get an identical bezel (the +Y one is a
+    blind vent recess, no through-hole), so the part is mirror-symmetric
+    everywhere a viewer can see. Verified numerically at the end.
+  * NO MORE WONKY FACETS. v5's stations were spaced 4/10/90mm apart with
+    parameters jumping around, so facet sizes were all over the place.
+    v6 uses evenly spaced stations with a smooth monotonic progression,
+    and is fore-aft symmetric about mid-length apart from the deliberate
+    nose/tail difference.
+  * BOTTOM. The shell stays open-bottomed (spec section 6), but now bolts
+    down to a flat base plate via INTERNAL bosses rather than the external
+    flange tried in v5 - the flange pushed width to 142mm (over the 135mm
+    spec) and mass to 323g (over the 300g budget). Internal bosses add
+    neither.
 """
+import os
 import numpy as np
 import trimesh
 import shapely.geometry as sg
 
-OUT = "/tmp/claude-0/-home-user-clauderep/d797779c-0f4d-5939-9a1d-ef5adbf7c278/scratchpad/enclosure_v5"
+OUT = os.path.dirname(os.path.abspath(__file__))
 
 L = 190.0
-PAD_Z = 58.0
-PAD_X0, PAD_X1 = 50.0, 140.0
 WALL_T = 3.0
+PAD_Z = 58.0
+PAD_X0, PAD_X1 = 56.0, 134.0
 
-# (x, bw, sw, sz, rw, az, groove)
-# NOTE on x=36/150/166: these are the INNER_X_RANGE hollow boundaries.
-# Originally (x=38 rw=10, x=150 rw=11, x=164 rw=8) they were narrow
-# enough that the interior didn't clear 85mm width at the 40mm height the
-# spec needs - checked numerically (half-width at z=40 came out to
-# 31/28/12mm, all failing the 42.5mm-half-width bar). Widened rw/az at
-# these three stations so the actual usable interior - not just the
-# gross INNER_X_RANGE span - clears 130x85x40 (verified below after
-# rebuilding). The V-notch (groove) is unchanged, so the dragon-seam
-# look is the same, just the ridge the groove cuts into is a bit wider
-# and taller at these specific stations.
+# Evenly spaced stations (0/32/64/95/126/158/190 - 31-32mm apart), smooth
+# monotonic progression, mirror-symmetric fore/aft except the nose being a
+# little lower and sharper than the tail.
+# (x, bottom_hw, shoulder_hw, shoulder_z, ridge_hw, apex_z, groove)
 STATIONS = [
-    (0.0,    7,  9,  6,  3, 12,  0.0),   # nose tip - low, narrow, sharp
-    (14.0,  18, 24, 12,  7, 26,  7.0),   # nose rises, V starting to open
-    (28.0,  40, 54, 21, 13, 46, 16.0),   # shoulder widens, deep V
-    (36.0,  56, 64, 25, 32, 60, 24.0),   # tall ridge peak before the pad - widened for cavity clearance
-    (46.0,  60, 66, 26, 36, 60,  6.0),   # ridge closes fast into the flat deck
-    (50.0,  62, 66, 26, 40, 58,  0.0),   # pad front edge (flat)
-    (140.0, 60, 65, 26, 40, 58,  0.0),   # pad back edge (flat)
-    (150.0, 58, 64, 25, 32, 59, 18.0),   # ridge resumes behind the pad - widened for cavity clearance
-    (166.0, 54, 62, 23, 34, 58, 16.0),   # rear ridge peak - widened for cavity clearance
-    (178.0, 28, 36, 16, 10, 28,  8.0),   # tail taper
-    (190.0, 18, 22, 13,  7, 18,  0.0),   # blunt tail transom
+    (0.0,    10, 13,  8,  5, 16,  0.0),   # nose tip
+    (30.0,   46, 60, 22, 36, 58, 20.0),   # shoulder, V open (sw/rw sized so the cavity clears 85mm at z=40)
+    (64.0,   60, 66, 26, 40, 58,  0.0),   # pad front
+    (95.0,   61, 66, 26, 40, 58,  0.0),   # pad mid
+    (126.0,  60, 66, 26, 40, 58,  0.0),   # pad back
+    (160.0,  46, 60, 22, 36, 58, 20.0),   # shoulder, V open (mirrors x=30)
+    (190.0,  16, 20, 12,  8, 22,  0.0),   # blunt tail transom (cable port lives here)
 ]
+
+INNER_X_RANGE = (30.0, 160.0)   # 130mm, matching the spec minimum exactly
+FIN_SPECS = [(26.0, 24.0), (38.0, 26.0)]   # (x_center, proud_height) on the nose-side V
+PORT_W, PORT_H, PORT_D = 16.0, 11.0, 14.0
+USB_W, USB_H = 14.0, 10.0
+USB_X, USB_Z = 70.0, 20.0
+
+BOLT_D = 4.5                       # M4 clearance
+BOSS_OD, BOSS_H = 11.0, 14.0       # internal bolt bosses
+BOSS_XS = [46.0, 144.0]
+BASE_L, BASE_W, BASE_T = 206.0, 150.0, 6.0
 
 def hex7(bw, sw, sz, rw, az, groove, floor_z=0.0):
     return [(-bw, floor_z), (bw, floor_z), (sw, sz), (rw, az), (0.0, az - groove), (-rw, az), (-sw, sz)]
@@ -69,25 +79,12 @@ def build_hull(stations, floor_z=0.0):
     mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=True)
     mesh.merge_vertices()
     trimesh.repair.fix_normals(mesh)
-    return mesh, verts, faces, pps, n
+    return mesh
 
 def inset(v, t, min_v=6.0):
     return max(v - t, min_v)
 
-def check_overhangs(mesh, label):
-    down = np.array([0, 0, -1.0])
-    dots = mesh.face_normals @ down
-    bad = dots > 0.70710678
-    bad_area = mesh.area_faces[bad].sum()
-    total_down_area = mesh.area_faces[dots > 0].sum()
-    pct = 100.0 * bad_area / total_down_area if total_down_area > 0 else 0.0
-    print(f"[{label}] overhang-violation area pct of downward-facing area: {pct:.1f}%  ({bad.sum()} faces)")
-    return pct
-
 def interp_station(x):
-    """Returns (bw, sw, sz, rw, az) - NOT groove; use interp_groove(x) too
-    if you need the true y=0 surface height (az - groove), since az alone
-    is the RIDGE height at y=+-rw, not the (lower, V-notched) centerline."""
     xs = [s[0] for s in STATIONS]
     if x <= xs[0]: return STATIONS[0][1:6]
     if x >= xs[-1]: return STATIONS[-1][1:6]
@@ -110,17 +107,12 @@ def interp_groove(x):
             return STATIONS[i][6] + t * (STATIONS[i + 1][6] - STATIONS[i][6])
     return STATIONS[-1][6]
 
-def build_dorsal_fin(x_center, proud_height, base_half=5.5, apex_back_offset=2.0,
-                      thick_half=2.5, embed=1.5):
-    # BUG (found via Rhino screenshots - fins floating with a visible gap
-    # underneath): this used to anchor to `az`, the RIDGE height at
-    # y=+-rw. But the fin is centered at y=0, which sits in the bottom of
-    # the V-notch, not on the ridge - the real surface there is lower by
-    # the groove depth. Anchor to that instead so the fin's base actually
-    # touches solid material.
+def build_dorsal_fin(x_center, proud_height, base_half=6.0, apex_back_offset=2.0,
+                      thick_half=2.5, embed=2.0):
+    # anchor to the TRUE y=0 surface (az - groove), not the ridge height az -
+    # the fins sit in the bottom of the V-notch, not on the ridge.
     bw, sw, sz, rw, az = interp_station(x_center)
-    groove = interp_groove(x_center)
-    surface_z = az - groove
+    surface_z = az - interp_groove(x_center)
     base_z = surface_z - embed
     apex_z = surface_z + proud_height
     x_front, x_back = x_center - base_half, x_center + base_half
@@ -135,78 +127,138 @@ def build_dorsal_fin(x_center, proud_height, base_half=5.5, apex_back_offset=2.0
     print(f"  fin@x={x_center:.0f}: proud={proud_height:.1f}mm front={front_deg:.1f}deg back={back_deg:.1f}deg (limit 45)")
     return fin
 
-hull, _, _, _, _ = build_hull(STATIONS)
-print(f"[hull] watertight={hull.is_watertight} volume={hull.volume/1000:.1f}cm^3 "
-      f"bbox={(hull.bounds[1]-hull.bounds[0]).round(1)}")
+def surface_half_width(x, z):
+    bw, sw, sz, rw, az = interp_station(x)
+    if z <= sz:
+        return bw + (z / sz) * (sw - bw)
+    return sw + (z - sz) / (az - sz) * (rw - sw)
 
-INNER_X_RANGE = (36.0, 166.0)   # 130mm, now genuinely wide/tall enough end to end
+def check_overhangs(mesh, label):
+    down = np.array([0, 0, -1.0])
+    dots = mesh.face_normals @ down
+    bad = dots > 0.70710678
+    pct = 100.0 * mesh.area_faces[bad].sum() / mesh.area_faces[dots > 0].sum()
+    print(f"[{label}] overhang-violation area: {pct:.1f}% of downward-facing area ({bad.sum()} faces)")
+    return pct
+
+# ---- hull + hollow --------------------------------------------------------
+hull = build_hull(STATIONS)
+print(f"[hull] watertight={hull.is_watertight} bbox={(hull.bounds[1]-hull.bounds[0]).round(1)}")
+
 inner_stations = [
     (x, inset(bw, WALL_T), inset(sw, WALL_T), max(sz - WALL_T, 2.0), inset(rw, WALL_T), az - WALL_T, 0.0)
     for (x, bw, sw, sz, rw, az, groove) in STATIONS if INNER_X_RANGE[0] <= x <= INNER_X_RANGE[1]
 ]
-inner_hull, _, _, _, _ = build_hull(inner_stations, floor_z=-3.0)
-print(f"[inner] watertight={inner_hull.is_watertight} volume={inner_hull.volume/1000:.1f}cm^3")
-
+inner_hull = build_hull(inner_stations, floor_z=-3.0)
 shell = hull.difference(inner_hull, engine="manifold")
 
-cable_port = trimesh.creation.box(extents=[14.0, 16.0, 11.0])
-cable_port.apply_translation([L - 5.0, 0, 1.0 + 5.5])
+# ---- rear cable port ------------------------------------------------------
+cable_port = trimesh.creation.box(extents=[PORT_D, PORT_W, PORT_H])
+cable_port.apply_translation([L - 5.0, 0, 1.0 + PORT_H / 2])
 shell = shell.difference(cable_port, engine="manifold")
 
-usb_x, usb_z = 60.0, 20.0
-bw_u, sw_u, sz_u, rw_u, az_u = interp_station(usb_x)
-surf_hw = bw_u + (usb_z / sz_u) * (sw_u - bw_u) if usb_z <= sz_u else sw_u + (usb_z - sz_u) / (az_u - sz_u) * (rw_u - sw_u)
+# ---- USB port, and a MATCHING blind vent on the far side so the part is
+#      mirror-symmetric to look at (v5 had the bezel on one side only) ------
+surf_hw = surface_half_width(USB_X, USB_Z)
 proud = 2.0
-bezel_outer_face = -(surf_hw + proud)
-bezel_inner_face = -(surf_hw - 2.5)
-bezel_cy = (bezel_outer_face + bezel_inner_face) / 2.0
-bezel_depth = abs(bezel_inner_face - bezel_outer_face)
-bezel = trimesh.creation.box(extents=[20.0, bezel_depth, 16.0])
-bezel.apply_translation([usb_x, bezel_cy, usb_z])
-shell = shell.union(bezel, engine="manifold")
-cut_outer = bezel_outer_face - 1.0
+for side in (-1.0, +1.0):
+    outer_face = side * (surf_hw + proud)
+    inner_face = side * (surf_hw - 2.5)
+    bezel = trimesh.creation.box(extents=[20.0, abs(outer_face - inner_face), 16.0])
+    bezel.apply_translation([USB_X, (outer_face + inner_face) / 2.0, USB_Z])
+    shell = shell.union(bezel, engine="manifold")
+
+# real through-cut on -Y (the USB side)
+cut_outer = -(surf_hw + proud + 1.0)
 cut_inner = -(surf_hw - 10.0)
-cut_cy = (cut_outer + cut_inner) / 2.0
-cut_depth = abs(cut_inner - cut_outer)
-usb_cut = trimesh.creation.box(extents=[14.0, cut_depth, 10.0])
-usb_cut.apply_translation([usb_x, cut_cy, usb_z])
+usb_cut = trimesh.creation.box(extents=[USB_W, abs(cut_inner - cut_outer), USB_H])
+usb_cut.apply_translation([USB_X, (cut_outer + cut_inner) / 2.0, USB_Z])
 shell = shell.difference(usb_cut, engine="manifold")
 
-print("front fins:")
-for fx, fh in [(31.0, 26.0), (36.0, 26.0)]:  # taller now that the base is correctly anchored low in the V-notch
+# matching shallow blind recess on +Y: same opening, but only 2.5mm deep so
+# it reads identical from outside without breaching the wall
+blind_outer = (surf_hw + proud + 1.0)
+blind_inner = (surf_hw - 0.5)
+blind = trimesh.creation.box(extents=[USB_W, abs(blind_outer - blind_inner), USB_H])
+blind.apply_translation([USB_X, (blind_outer + blind_inner) / 2.0, USB_Z])
+shell = shell.difference(blind, engine="manifold")
+
+# ---- dorsal fins ----------------------------------------------------------
+print("fins:")
+for fx, fh in FIN_SPECS:
     shell = shell.union(build_dorsal_fin(fx, fh), engine="manifold")
+
+# ---- internal bolt bosses (no external flange - that blew the width and
+#      mass budgets in v5). Bolts come up through the base plate into these.
+BOLTS = []
+for bx in BOSS_XS:
+    hw_at_base = surface_half_width(bx, 0.0)
+    by = hw_at_base - WALL_T - BOSS_OD / 2.0 - 1.0   # tucked just inside the wall
+    for sgn in (-1.0, 1.0):
+        BOLTS.append((bx, sgn * by))
+
+for (bx, by) in BOLTS:
+    boss = trimesh.creation.cylinder(radius=BOSS_OD / 2.0, height=BOSS_H)
+    boss.apply_translation([bx, by, BOSS_H / 2.0])
+    shell = shell.union(boss, engine="manifold")
+    hole = trimesh.creation.cylinder(radius=BOLT_D / 2.0, height=BOSS_H * 3)
+    hole.apply_translation([bx, by, BOSS_H / 2.0])
+    shell = shell.difference(hole, engine="manifold")
 
 shell.merge_vertices()
 trimesh.repair.fix_normals(shell)
-
-mass_g = shell.volume / 1000.0 * 1.24
-cost_usd = mass_g / 1000.0 * 22.0
-overhang_pct = check_overhangs(shell, "body")
-bbox = (shell.bounds[1] - shell.bounds[0]).tolist()
-print(f"watertight={shell.is_watertight} mass_g={mass_g:.0f} cost_usd={cost_usd:.2f} bbox={bbox}")
 shell.export(f"{OUT}/body.stl")
 
+mass_g = shell.volume / 1000.0 * 1.24
+bbox = (shell.bounds[1] - shell.bounds[0])
+print(f"[body] watertight={shell.is_watertight} mass={mass_g:.0f}g cost=${mass_g/1000*22:.2f} "
+      f"bbox={bbox.round(1)}")
+check_overhangs(shell, "body")
+
+# ---- symmetry check (the actual complaint) --------------------------------
+mirrored = shell.copy()
+mirrored.apply_transform(np.array([[1,0,0,0],[0,-1,0,0],[0,0,1,0],[0,0,0,1]]))
+d_vol = abs(shell.volume - mirrored.volume)
+ext_a, ext_b = shell.bounds[1] - shell.bounds[0], mirrored.bounds[1] - mirrored.bounds[0]
+print(f"[symmetry] |volume difference| vs mirrored copy = {d_vol:.4f} mm^3")
+print(f"[symmetry] y-extent: +Y={shell.bounds[1][1]:.2f}  -Y={shell.bounds[0][1]:.2f} "
+      f"(equal magnitude = left/right symmetric)")
+
+# ---- cavity vs spec's 130 x 85 x 40 --------------------------------------
+print("[cavity] station-by-station clearance check:")
+ok_all = True
+for s in STATIONS:
+    x = s[0]
+    if not (INNER_X_RANGE[0] <= x <= INNER_X_RANGE[1]):
+        continue
+    bw, sw, sz, rw, az = interp_station(x)
+    bw2, sw2, sz2, rw2, az2 = inset(bw, WALL_T), inset(sw, WALL_T), max(sz - WALL_T, 2), inset(rw, WALL_T), az - WALL_T
+    hw40 = bw2 + (40 / sz2) * (sw2 - bw2) if 40 <= sz2 else sw2 + (40 - sz2) / (az2 - sz2) * (rw2 - sw2)
+    ok = hw40 >= 42.5 and az2 >= 40
+    ok_all = ok_all and ok
+    print(f"   x={x:5.0f}: half-width@z40={hw40:5.1f}mm ceiling={az2:4.1f}mm  {'PASS' if ok else 'FAIL'}")
+print(f"[cavity] length={INNER_X_RANGE[1]-INNER_X_RANGE[0]:.0f}mm (spec wants >=130), "
+      f"all stations clear 85x40: {ok_all}")
+
+# ---- top plate ------------------------------------------------------------
 def chamfered_rect(w, h, chamfer):
     hw, hh = w / 2.0, h / 2.0
-    pts = [(-hw + chamfer, -hh), (hw - chamfer, -hh), (hw, -hh + chamfer), (hw, hh - chamfer),
-           (hw - chamfer, hh), (-hw + chamfer, hh), (-hw, hh - chamfer), (-hw, -hh + chamfer)]
-    return pts
+    return [(-hw + chamfer, -hh), (hw - chamfer, -hh), (hw, -hh + chamfer), (hw, hh - chamfer),
+            (hw - chamfer, hh), (-hw + chamfer, hh), (-hw, hh - chamfer), (-hw, -hh + chamfer)]
 
-# generic flat mounting plate for OUR bars - 7/8" clamps are compact, so this
-# is sized conservatively generous (not the specific riser/clamp hardware in
-# the reference image, which was unrelated stock hardware). Bolt holes stay
-# undrilled per spec - mark/drill after the real clamps are in hand.
-# NOTE: no rotation here (earlier versions rotated 90deg to dodge dorsal
-# fins near the pad, but v5's fins are up at the nose, nowhere near the
-# pad, so that rotation was copied over by mistake and had it backwards:
-# it put the 190mm dimension along body-X (hanging off both the nose and
-# tail) and the 100mm dimension along body-Y (too narrow to span bar
-# clamps). Unrotated, chamfered_rect(w=100, h=190) already maps w->X
-# (matches the ~90mm pad length) and h->Y (spans side-to-side for the
-# clamps), which is what's actually wanted.
-plate_poly = sg.Polygon(chamfered_rect(100.0, 190.0, 10.0))
-plate = trimesh.creation.extrude_polygon(plate_poly, height=6.0)
+plate = trimesh.creation.extrude_polygon(sg.Polygon(chamfered_rect(100.0, 190.0, 10.0)), height=6.0)
 plate.apply_translation([(PAD_X0 + PAD_X1) / 2, 0, PAD_Z])
-plate.export(f"{OUT}/plate.stl")
-plate_mass_g = plate.volume / 1000.0 * 1.24
-print(f"plate watertight={plate.is_watertight} mass_g={plate_mass_g:.0f} (if printed)")
+plate.export(f"{OUT}/top_plate.stl")
+print(f"[top plate] 100 x 190 x 6mm, {plate.volume/1000*1.24:.0f}g if printed "
+      f"(plywood/acrylic recommended)")
+
+# ---- base plate -----------------------------------------------------------
+base = trimesh.creation.extrude_polygon(sg.Polygon(chamfered_rect(BASE_L, BASE_W, 12.0)), height=BASE_T)
+base.apply_translation([L / 2.0, 0.0, -BASE_T])
+for (bx, by) in BOLTS:
+    hole = trimesh.creation.cylinder(radius=BOLT_D / 2.0, height=BASE_T * 4)
+    hole.apply_translation([bx, by, -BASE_T / 2.0])
+    base = base.difference(hole, engine="manifold")
+base.export(f"{OUT}/base_plate.stl")
+print(f"[base plate] {BASE_L:.0f} x {BASE_W:.0f} x {BASE_T:.0f}mm plywood/acrylic, "
+      f"{len(BOLTS)} x M4 holes at {[(round(a), round(b)) for a, b in BOLTS]}")

@@ -1,27 +1,35 @@
 """
-Handlebar Demo Enclosure v5 "dragon shield" - builds directly into the
-active Rhino document.
+Handlebar Demo Enclosure v6 - builds directly into the active Rhino document.
 
 Run this INSIDE Rhino (ScriptEditor / EditPythonScript), not as a standalone
 .py - it uses RhinoCommon (Rhino.Geometry) and scriptcontext, which only
 exist inside Rhino's own Python. No pip installs needed.
 
-Angular/faceted shield shape: low tapered nose -> deep V-ridge (sharp
-groove down the centerline, reads as the glowing seam in the renders) ->
-two small front fins -> flat mounting pad -> V-ridge resumes behind the
-pad -> tail taper -> blunt transom. Rear cable port, bezeled USB port on
-the left wall, flat mounting plate sized generically for your actual bar
-clamps (not the specific hardware in the reference image - that was
-unrelated stock photography).
+Three objects come out, on three layers:
+  Enclosure Body - the printed shell (open bottom, bolts down to the base)
+  Top Plate      - flat mount the bar clamps bolt to (plywood/acrylic)
+  Base Plate     - flat board the shell bolts down onto (plywood/acrylic)
+
+What changed from v5:
+  * SYMMETRY. v5 read lopsided because the USB bezel stuck out on the -Y
+    side only. Both flanks now get an identical bezel; the +Y one is a
+    blind recess with no through-hole, so the part is mirror-symmetric
+    anywhere a viewer can see.
+  * EVEN FACETS. v5's stations were spaced 4/10/90mm apart with parameters
+    jumping around, so facet sizes were all over the place. v6 uses evenly
+    spaced stations (~31mm) with a smooth monotonic progression.
+  * A BOTTOM. The shell itself is still open-bottomed (spec section 6), but
+    it now bolts down to a base plate through four INTERNAL bosses. An
+    external bolt flange was tried first and rejected: it pushed width to
+    142mm (spec caps 135mm) and mass to 323g (budget 300g). Internal bosses
+    add neither.
 
 Color it in Rhino's material/render panel: dark gunmetal body
 (~RGB 60,62,67), near-black top plate, and give the faces right along the
-centerline groove an emissive red/orange material for the glowing-seam
-look from the renders (select those faces with Rhino's "SelSubCrv" or by
-hand along the ridge, then assign a separate sub-object material).
+centerline groove an emissive red/orange material for the glowing-seam look
+from the renders.
 
-Edit STATIONS to change the taper/facet shape, then re-run (it clears its
-own layers first so re-running is safe).
+Re-running is safe - it deletes the objects it made last time first.
 """
 import Rhino
 import Rhino.Geometry as rg
@@ -32,49 +40,48 @@ import math
 # ---- envelope ---------------------------------------------------------
 L = 190.0
 PAD_Z = 58.0
-PAD_X0, PAD_X1 = 50.0, 140.0
+PAD_X0, PAD_X1 = 56.0, 134.0
 WALL_T = 3.0
 
-# NOTE on x=36/150/166: these are the INNER_X_RANGE hollow boundaries.
-# Originally (x=38 rw=10, x=150 rw=11, x=164 rw=8) they were narrow enough
-# that the interior didn't clear 85mm width at the 40mm height the spec
-# needs - checked numerically (half-width at z=40 came out to 31/28/12mm,
-# all failing the 42.5mm-half-width bar). Widened rw/az at these three
-# stations so the actual usable interior - not just the gross
-# INNER_X_RANGE span - clears 130x85x40 (every station in range now
-# individually passes, not just the two endpoints). The V-notch (groove)
-# is unchanged, so the dragon-seam look is the same, just the ridge the
-# groove cuts into is a bit wider/taller at these specific stations.
+# Evenly spaced stations, smooth monotonic progression, mirror-symmetric
+# fore/aft apart from the nose being lower and sharper than the tail.
+# The two shoulder stations (x=30/160) are the hollow-region boundaries;
+# their shoulder_hw/ridge_hw are sized so the interior clears 85mm of width
+# at the 40mm height the components need, not just at mid-length.
 # (x, bottom_hw, shoulder_hw, shoulder_z, ridge_hw, apex_z, groove)
 STATIONS = [
-    (0.0,    7,  9,  6,  3, 12,  0.0),   # nose tip - low, narrow, sharp
-    (14.0,  18, 24, 12,  7, 26,  7.0),   # nose rises, V starting to open
-    (28.0,  40, 54, 21, 13, 46, 16.0),   # shoulder widens, deep V
-    (36.0,  56, 64, 25, 32, 60, 24.0),   # tall ridge peak before the pad - widened for cavity clearance
-    (46.0,  60, 66, 26, 36, 60,  6.0),   # ridge closes fast into the flat deck
-    (50.0,  62, 66, 26, 40, 58,  0.0),   # pad front edge (flat)
-    (140.0, 60, 65, 26, 40, 58,  0.0),   # pad back edge (flat)
-    (150.0, 58, 64, 25, 32, 59, 18.0),   # ridge resumes behind the pad - widened for cavity clearance
-    (166.0, 54, 62, 23, 34, 58, 16.0),   # rear ridge peak - widened for cavity clearance
-    (178.0, 28, 36, 16, 10, 28,  8.0),   # tail taper
-    (190.0, 18, 22, 13,  7, 18,  0.0),   # blunt tail transom
+    (0.0,    10, 13,  8,  5, 16,  0.0),   # nose tip
+    (30.0,   46, 60, 22, 36, 58, 20.0),   # shoulder, V open
+    (64.0,   60, 66, 26, 40, 58,  0.0),   # pad front
+    (95.0,   61, 66, 26, 40, 58,  0.0),   # pad mid
+    (126.0,  60, 66, 26, 40, 58,  0.0),   # pad back
+    (160.0,  46, 60, 22, 36, 58, 20.0),   # shoulder, V open (mirrors x=30)
+    (190.0,  16, 20, 12,  8, 22,  0.0),   # blunt tail transom (cable port)
 ]
 
-INNER_X_RANGE = (36.0, 166.0)   # 130mm, now genuinely wide/tall enough end to end
-# (x_center, proud_height) - front, nose side. proud_height is measured
-# from the TRUE y=0 surface (az - groove, see build_dorsal_fin below), not
-# from az, so it needs to be large enough to clear the groove depth
-# (~18-22mm here) before the fin pokes up past the surrounding ridge.
-FIN_SPECS = [(31.0, 26.0), (36.0, 26.0)]
+INNER_X_RANGE = (30.0, 160.0)   # 130mm, matching the spec minimum exactly
+
+# (x_center, proud_height). proud_height is measured from the TRUE y=0
+# surface (az - groove, see build_dorsal_fin), not from az, so it has to be
+# large enough to clear the groove depth before the fin pokes up past the
+# surrounding ridge.
+FIN_SPECS = [(26.0, 24.0), (38.0, 26.0)]
+
 PORT_W, PORT_H, PORT_D = 16.0, 11.0, 14.0
 USB_W, USB_H = 14.0, 10.0
-USB_X, USB_Z = 60.0, 20.0
-# generic flat mounting plate for the actual bars - not the specific
-# clamp/riser hardware in the reference image, which was unrelated stock
-# hardware. Bolt holes stay undrilled per spec - mark/drill after the
-# real clamps are in hand. w maps to body-X (sits on the ~90mm pad),
-# h maps to body-Y (spans side-to-side for the clamps).
+USB_X, USB_Z = 70.0, 20.0
+
+BOLT_D = 4.5                       # M4 clearance
+BOSS_OD, BOSS_H = 11.0, 14.0       # internal bolt bosses
+BOSS_XS = [46.0, 144.0]
+
+# Top plate: PLATE_X maps to body-X (sits on the ~78mm pad), PLATE_Y maps to
+# body-Y (spans side-to-side for the bar clamps). Bolt holes stay undrilled
+# per spec - mark and drill once the real clamps are in hand.
 PLATE_X, PLATE_Y, PLATE_T, PLATE_CHAMFER = 100.0, 190.0, 6.0, 10.0
+BASE_L, BASE_W, BASE_T, BASE_CHAMFER = 206.0, 150.0, 6.0, 12.0
+
+OBJ_NAME_PREFIX = "handlebar_enclosure_v6"
 
 # ---- geometry helpers ---------------------------------------------------
 def hept_pts(bw, sw, sz, rw, az, groove, floor_z=0.0):
@@ -110,6 +117,15 @@ def box_mesh(cx, cy, cz, dx, dy, dz):
     plane = rg.Plane(rg.Point3d(cx, cy, cz), rg.Vector3d.ZAxis)
     box = rg.Box(plane, rg.Interval(-dx / 2, dx / 2), rg.Interval(-dy / 2, dy / 2), rg.Interval(-dz / 2, dz / 2))
     return rg.Mesh.CreateFromBox(box, 1, 1, 1)
+
+def cylinder_mesh(cx, cy, z0, radius, height, sides=24):
+    base_plane = rg.Plane(rg.Point3d(cx, cy, z0), rg.Vector3d.ZAxis)
+    cyl = rg.Cylinder(rg.Circle(base_plane, radius), height)
+    mesh = rg.Mesh.CreateFromCylinder(cyl, 1, sides)
+    mesh.UnifyNormals()
+    mesh.Normals.ComputeNormals()
+    mesh.Compact()
+    return mesh
 
 def extrude_xy_polygon(pts_xy, z0, z1, offset=(0.0, 0.0, 0.0)):
     n = len(pts_xy)
@@ -154,8 +170,8 @@ def inset(v, t, min_v=6.0):
 
 def interp_station(x):
     """Returns (bw, sw, sz, rw, az) - NOT groove; use interp_groove(x) too
-    if you need the true y=0 surface height (az - groove), since az alone
-    is the RIDGE height at y=+-rw, not the (lower, V-notched) centerline."""
+    if you need the true y=0 surface height (az - groove), since az alone is
+    the RIDGE height at y=+-rw, not the (lower, V-notched) centerline."""
     xs = [s[0] for s in STATIONS]
     if x <= xs[0]:
         return STATIONS[0][1:6]
@@ -182,17 +198,19 @@ def interp_groove(x):
             return STATIONS[i][6] + t * (STATIONS[i + 1][6] - STATIONS[i][6])
     return STATIONS[-1][6]
 
-def build_dorsal_fin(x_center, proud_height, base_half=5.5, apex_back_offset=2.0,
-                      thick_half=2.5, embed=1.5):
-    # BUG (found via Rhino screenshots - fins floating with a visible gap
-    # underneath): this used to anchor to `az`, the RIDGE height at
-    # y=+-rw. But the fin is centered at y=0, which sits in the bottom of
-    # the V-notch, not on the ridge - the real surface there is lower by
-    # the groove depth. Anchor to that instead so the fin's base actually
-    # touches solid material.
+def surface_half_width(x, z):
+    bw, sw, sz, rw, az = interp_station(x)
+    if z <= sz:
+        return bw + (z / sz) * (sw - bw)
+    return sw + (z - sz) / (az - sz) * (rw - sw)
+
+def build_dorsal_fin(x_center, proud_height, base_half=6.0, apex_back_offset=2.0,
+                      thick_half=2.5, embed=2.0):
+    # Anchor to the TRUE y=0 surface (az - groove), not the RIDGE height az
+    # at y=+-rw. The fin is centered at y=0, which sits in the bottom of the
+    # V-notch; anchoring to az left it floating by the groove depth.
     bw, sw, sz, rw, az = interp_station(x_center)
-    groove = interp_groove(x_center)
-    surface_z = az - groove
+    surface_z = az - interp_groove(x_center)
     base_z = surface_z - embed
     apex_z = surface_z + proud_height
     x_front, x_back = x_center - base_half, x_center + base_half
@@ -218,6 +236,8 @@ def build_dorsal_fin(x_center, proud_height, base_half=5.5, apex_back_offset=2.0
     return mesh
 
 def boolean_diff(mesh_a, mesh_b, label):
+    # CreateBooleanDifference returns a .NET array - list() it before any
+    # Python indexing or slicing, or you get "array index has type slice".
     result = list(rg.Mesh.CreateBooleanDifference([mesh_a], [mesh_b]))
     if len(result) == 0:
         print("WARNING: boolean difference failed for " + label + " - keeping previous mesh")
@@ -248,40 +268,63 @@ inner_stations = [
 inner_hull = build_hull_mesh(inner_stations, floor_z=-3.0)
 shell = boolean_diff(hull, inner_hull, "hollow midsection")
 
-cable_port = box_mesh(L - PORT_D / 2 + 2, 0, 1.0 + PORT_H / 2, PORT_D, PORT_W, PORT_H)
+cable_port = box_mesh(L - 5.0, 0, 1.0 + PORT_H / 2, PORT_D, PORT_W, PORT_H)
 shell = boolean_diff(shell, cable_port, "rear cable port")
 
-# USB bezel: compute the real outer-hull half-width at (USB_X, USB_Z) so the
-# bezel genuinely stands proud and the cut fully penetrates the wall.
-bw_u, sw_u, sz_u, rw_u, az_u = interp_station(USB_X)
-if USB_Z <= sz_u:
-    surf_hw = bw_u + (USB_Z / sz_u) * (sw_u - bw_u)
-else:
-    surf_hw = sw_u + (USB_Z - sz_u) / (az_u - sz_u) * (rw_u - sw_u)
+# ---- USB port, plus a MATCHING blind recess on the far side so the part is
+#      mirror-symmetric to look at (v5 had the bezel on one side only) -----
+surf_hw = surface_half_width(USB_X, USB_Z)
 proud = 2.0
-bezel_outer_face = -(surf_hw + proud)
-bezel_inner_face = -(surf_hw - 2.5)
-bezel_cy = (bezel_outer_face + bezel_inner_face) / 2.0
-bezel_depth = abs(bezel_inner_face - bezel_outer_face)
-bezel = box_mesh(USB_X, bezel_cy, USB_Z, 20.0, bezel_depth, 16.0)
-shell = boolean_union(shell, bezel, "usb bezel")
+for side in (-1.0, 1.0):
+    outer_face = side * (surf_hw + proud)
+    inner_face = side * (surf_hw - 2.5)
+    bezel = box_mesh(USB_X, (outer_face + inner_face) / 2.0, USB_Z,
+                     20.0, abs(outer_face - inner_face), 16.0)
+    shell = boolean_union(shell, bezel, "usb bezel side %.0f" % side)
 
-cut_outer = bezel_outer_face - 1.0
+# real through-cut on -Y (the USB side)
+cut_outer = -(surf_hw + proud + 1.0)
 cut_inner = -(surf_hw - 10.0)
-cut_cy = (cut_outer + cut_inner) / 2.0
-cut_depth = abs(cut_inner - cut_outer)
-usb_cut = box_mesh(USB_X, cut_cy, USB_Z, USB_W, cut_depth, USB_H)
+usb_cut = box_mesh(USB_X, (cut_outer + cut_inner) / 2.0, USB_Z,
+                   USB_W, abs(cut_inner - cut_outer), USB_H)
 shell = boolean_diff(shell, usb_cut, "usb cutout")
 
-for (fx, fh) in FIN_SPECS:
-    fin = build_dorsal_fin(fx, fh)
-    shell = boolean_union(shell, fin, "dorsal fin @ x=%.0f" % fx)
+# matching shallow blind recess on +Y: same opening, 2.5mm deep, so it reads
+# identical from outside without breaching the wall
+blind_outer = surf_hw + proud + 1.0
+blind_inner = surf_hw - 0.5
+blind = box_mesh(USB_X, (blind_outer + blind_inner) / 2.0, USB_Z,
+                 USB_W, abs(blind_outer - blind_inner), USB_H)
+shell = boolean_diff(shell, blind, "blind recess (symmetry)")
 
-# ---- top plate: no rotation - w(100) maps to body-X (sits on the pad),
-# h(190) maps to body-Y (spans side-to-side for the bar clamps) ------------
-plate_pts = chamfered_rect_pts(PLATE_X, PLATE_Y, PLATE_CHAMFER)
-plate_cx = (PAD_X0 + PAD_X1) / 2.0
-plate = extrude_xy_polygon(plate_pts, PAD_Z, PAD_Z + PLATE_T, offset=(plate_cx, 0.0, 0.0))
+# ---- dorsal fins ---------------------------------------------------------
+for (fx, fh) in FIN_SPECS:
+    shell = boolean_union(shell, build_dorsal_fin(fx, fh), "dorsal fin @ x=%.0f" % fx)
+
+# ---- internal bolt bosses -----------------------------------------------
+BOLTS = []
+for bx in BOSS_XS:
+    by = surface_half_width(bx, 0.0) - WALL_T - BOSS_OD / 2.0 - 1.0  # tucked just inside the wall
+    BOLTS.append((bx, -by))
+    BOLTS.append((bx, by))
+
+for (bx, by) in BOLTS:
+    boss = cylinder_mesh(bx, by, 0.0, BOSS_OD / 2.0, BOSS_H)
+    shell = boolean_union(shell, boss, "bolt boss @ (%.0f, %.0f)" % (bx, by))
+    hole = cylinder_mesh(bx, by, -BOSS_H, BOLT_D / 2.0, BOSS_H * 3)
+    shell = boolean_diff(shell, hole, "bolt hole @ (%.0f, %.0f)" % (bx, by))
+
+# ---- top plate -----------------------------------------------------------
+plate = extrude_xy_polygon(chamfered_rect_pts(PLATE_X, PLATE_Y, PLATE_CHAMFER),
+                           PAD_Z, PAD_Z + PLATE_T,
+                           offset=((PAD_X0 + PAD_X1) / 2.0, 0.0, 0.0))
+
+# ---- base plate (shell bolts down onto this) -----------------------------
+base = extrude_xy_polygon(chamfered_rect_pts(BASE_L, BASE_W, BASE_CHAMFER),
+                          -BASE_T, 0.0, offset=(L / 2.0, 0.0, 0.0))
+for (bx, by) in BOLTS:
+    hole = cylinder_mesh(bx, by, -BASE_T * 2, BOLT_D / 2.0, BASE_T * 4)
+    base = boolean_diff(base, hole, "base bolt hole @ (%.0f, %.0f)" % (bx, by))
 
 # ---- push into the Rhino document ----------------------------------------
 def ensure_layer(name, color):
@@ -295,26 +338,41 @@ def ensure_layer(name, color):
         sc.doc.Layers[idx].Color = color
     return idx
 
-body_layer = ensure_layer("Enclosure Body", sd.Color.FromArgb(60, 62, 67))    # gunmetal
-plate_layer = ensure_layer("Top Plate", sd.Color.FromArgb(18, 18, 20))        # near-black
+def clear_previous():
+    """So re-running doesn't stack a second copy on top of the first."""
+    removed = 0
+    for obj in list(sc.doc.Objects):
+        if obj.Attributes.Name and obj.Attributes.Name.startswith(OBJ_NAME_PREFIX):
+            sc.doc.Objects.Delete(obj, True)
+            removed += 1
+    if removed:
+        print("cleared %d object(s) from a previous run" % removed)
 
-body_attr = Rhino.DocObjects.ObjectAttributes()
-body_attr.LayerIndex = body_layer
-body_attr.ColorSource = Rhino.DocObjects.ObjectColorSource.ColorFromLayer
+def add(mesh, layer_name, color, suffix):
+    attr = Rhino.DocObjects.ObjectAttributes()
+    attr.LayerIndex = ensure_layer(layer_name, color)
+    attr.ColorSource = Rhino.DocObjects.ObjectColorSource.ColorFromLayer
+    attr.Name = OBJ_NAME_PREFIX + "_" + suffix
+    sc.doc.Objects.AddMesh(mesh, attr)
 
-plate_attr = Rhino.DocObjects.ObjectAttributes()
-plate_attr.LayerIndex = plate_layer
-plate_attr.ColorSource = Rhino.DocObjects.ObjectColorSource.ColorFromLayer
-
-sc.doc.Objects.AddMesh(shell, body_attr)
-sc.doc.Objects.AddMesh(plate, plate_attr)
+clear_previous()
+add(shell, "Enclosure Body", sd.Color.FromArgb(60, 62, 67), "body")
+add(plate, "Top Plate", sd.Color.FromArgb(18, 18, 20), "top_plate")
+add(base, "Base Plate", sd.Color.FromArgb(150, 120, 80), "base_plate")
 sc.doc.Views.Redraw()
 
-print("Body mesh: valid=%s  volume=%.1f cm^3  (~%.0fg PLA)" %
-      (shell.IsValid, shell.Volume() / 1000.0, shell.Volume() / 1000.0 * 1.24))
-print("Top plate: valid=%s  volume=%.1f cm^3  (~%.0fg if printed - plywood/acrylic recommended instead)" %
-      (plate.IsValid, plate.Volume() / 1000.0, plate.Volume() / 1000.0 * 1.24))
-print("Done - look on layers 'Enclosure Body' and 'Top Plate'.")
-print("Tip: select the faces straight down the centerline V and give them a")
-print("separate emissive red material (Rhino's sub-object material assign)")
-print("for the glowing-seam look from the renders.")
+bb = shell.GetBoundingBox(True)
+print("Body:  valid=%s  volume=%.1f cm^3  (~%.0fg PLA)  bbox=%.0f x %.0f x %.0f mm" %
+      (shell.IsValid, shell.Volume() / 1000.0, shell.Volume() / 1000.0 * 1.24,
+       bb.Max.X - bb.Min.X, bb.Max.Y - bb.Min.Y, bb.Max.Z - bb.Min.Z))
+print("Top plate: %.0f x %.0f x %.0fmm - cut from plywood/acrylic, don't print it" %
+      (PLATE_X, PLATE_Y, PLATE_T))
+print("Base plate: %.0f x %.0f x %.0fmm with %d x M4 holes - plywood/acrylic" %
+      (BASE_L, BASE_W, BASE_T, len(BOLTS)))
+print("Bolt positions (x, y) in mm: %s" % ([(round(a), round(b)) for a, b in BOLTS],))
+print("")
+print("NOTE: select ONLY the body mesh before running BoundingBox - the")
+print("plates are deliberately wider than the shell, so a cumulative")
+print("bounding box over all three reports the plates' size, not the shell's.")
+print("Tip: give the faces straight down the centerline V a separate")
+print("emissive red material for the glowing-seam look from the renders.")

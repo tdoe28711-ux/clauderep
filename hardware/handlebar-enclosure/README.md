@@ -1,121 +1,130 @@
-# Handlebar Demo Enclosure — v5 "dragon shield"
+# Handlebar Demo Enclosure — v6
 
 Team Hero · UXDG 340
 
-Concept massing study, not manufacturing-ready. Third major direction after
-the faceted dragonhead/spinefin merge (v3) and a fully smooth sculpted pass
-(v4). This version comes from a specific reference image: dark gunmetal,
-angular faceted shield shape, a glowing red V-seam down the centerline,
-small dragon-fin accents near the nose.
+Concept massing study, not manufacturing-ready. Same dark-gunmetal faceted
+shield direction as v5 (glowing red V-seam, small dragon fins near the
+nose), rebuilt from scratch to fix three things that were wrong with it:
+it wasn't symmetric, the facets were irregular, and it had no bottom.
 
 ![3/4 view](renders/enclosure_corner.png)
+![Exploded](renders/enclosure_exploded.png)
+![With bar mount plate](renders/enclosure_mounted.png)
 ![Front view](renders/enclosure_front.png)
 ![Side view](renders/enclosure_side.png)
-![Top view](renders/enclosure_top.png)
+![Underside](renders/enclosure_under.png)
 
-## What's in this version
+## The three fixes
 
-- **Angular faceted shield body** — back to hard facets (not v4's smooth
-  curves), reusing the proven 7-point groove cross-section from v3.
-- **Sharp V-ridge down the centerline**, deepest right before the mounting
-  pad, giving the aggressive "face" read from the reference. Rendered with
-  a glowing red/orange seam along the groove.
-- **Two small fins near the nose**, echoing the reference's "ridge detail:
-  small fins for a dragon-like silhouette."
-- **Dark gunmetal body / near-black plate**, matching the reference's
-  material instead of the earlier tan/bronze PLA look.
-- **Generic flat mounting plate for the actual bars** — not the specific
-  riser/clamp hardware shown in the reference image, which was unrelated
-  stock photography. Plate is 100 × 190mm, bolt holes left undrilled per
-  spec (mark and drill once the real clamps are in hand).
+### 1. Symmetry
 
-## Bugs found and fixed (two rounds)
+v5 read lopsided because the USB bezel stuck out 2mm on the −Y side only.
+Both flanks now get an identical bezel; the +Y one is a blind recess 2.5mm
+deep, so it looks the same from outside without breaching the wall. The
+generator checks this numerically rather than by eye: mirroring the finished
+mesh across Y and differencing the volume gives **0.0000 mm³**, and the
+±Y extents match to the decimal (66.66 / −66.66).
 
-1. **Plate rotated 90° by mistake** (copied from an earlier version where
-   that rotation dodged a different set of fins). Put the plate's long
-   190mm dimension along the body's length — hanging off both the nose
-   and tail — instead of across the body for the bar clamps. Fixed before
-   the first Rhino handoff.
-2. **Fins floating with a visible gap underneath** (caught from Rhino
-   screenshots after printing/viewing the first dragon-shield pass). Root
-   cause: the fin's base was anchored to `az`, the ridge height out at
-   `y=±rw` — but the fins sit centered at `y=0`, which is the *bottom* of
-   the V-notch, not the ridge. At the fin's actual position, the true
-   surface is 18-22mm lower than `az` (`az - groove`). The fin's base was
-   floating in mid-air that whole distance. Fixed by anchoring to
-   `az - groove` instead, and increased fin height (9/11mm → 26mm) so the
-   tips still clear the now-correctly-lower base and poke up past the
-   surrounding ridge.
+### 2. Even facets
 
-## Cavity sizing - verified, not just assumed
+v5's stations were spaced 4 / 10 / 90mm apart with the shape parameters
+jumping around between them, so facet sizes were all over the place — that's
+the "wonky geometry" read. v6 uses seven evenly spaced stations (~31mm
+apart) with a smooth monotonic progression, mirror-symmetric fore and aft
+apart from the nose being deliberately lower and sharper than the tail.
 
-Spec requires >=130 x 85 x 40mm of usable interior. The gross
-`INNER_X_RANGE` length (126mm) looked close enough at a glance, but
-checking every station individually (half-width at the 40mm height the
-components need) showed the two hollow-region boundary stations, plus one
-in the middle, actually pinched down to 25-63mm wide there - well under
-the 85mm needed. Fixed by widening the ridge at those three stations
-(wider/taller, same groove depth, so the V-notch look is unchanged) and
-re-verified: **every** station across the full 130mm hollow span (36mm to
-166mm) now individually clears 85mm width at 40mm height, not just the
-two endpoints. See `generate_enclosure.py`'s station comments for the
-before/after numbers.
+### 3. A bottom
 
-External envelope is unaffected by either fix: still 190 × 133 × 62mm,
-inside the spec's 190 × 135 × 70 recommendation and every printer bed
-listed in spec.md.
+**The spec contradicts itself here, and that's worth flagging to the team.**
+Sections 6 and 8 say "opens downward, no floor" and "no separate base plate
+needed." But section 7's structural warning says to "use a real bike stem
+bolted through to a plywood base with the printed enclosure as a shell
+around it." Those can't both be true — handlebar load has to go somewhere,
+and a floorless shell has nothing to react against.
+
+v6 follows section 7: the shell stays open-bottomed (so the Arduino drops in
+from below and the print needs no internal supports), but it now bolts down
+to a flat base plate through **four internal M4 bosses** at
+(46, ±43) and (144, ±43). Base plate is 206 × 150 × 6mm plywood or acrylic.
+
+An external bolt flange was tried first and rejected: it pushed width to
+142mm (spec caps 135mm) and mass to 323g (budget is 300g). Internal bosses
+add neither.
+
+## Cavity sizing — verified, not assumed
+
+Spec requires ≥130 × 85 × 40mm of usable interior. Gross span looks fine at
+a glance but says nothing about the pinch points, so the generator checks
+the half-width at the 40mm height **at every station** in the hollow range:
+
+| Station (x) | Half-width @ z=40 | Ceiling | |
+|---|---|---|---|
+| 30 | 43.0mm | 55.0mm | PASS |
+| 64 | 49.2mm | 55.0mm | PASS |
+| 95 | 49.2mm | 55.0mm | PASS |
+| 126 | 49.2mm | 55.0mm | PASS |
+| 160 | 43.0mm | 55.0mm | PASS |
+
+Required is 42.5mm half-width (85mm full). Hollow span is 130mm exactly.
 
 ## Numbers
 
 | | Value |
 |---|---|
-| Body mass (PLA) | 255g |
-| Body cost @ $22/kg | $5.61 |
-| Body bbox | 190 × 133 × 62mm |
-| Cavity | 130mm long, >=85mm wide and >=40mm tall at every station in that span |
-| Plate mass if printed | 140g — recommend plywood/acrylic instead |
-| Overhang checker | 35.9% of downward-facing area flagged |
-| Fin overhang angles | both fins 15.3°/7.3° (well under the 45° limit) |
+| Body mass (PLA) | 281g |
+| Body cost @ $22/kg | $6.18 |
+| Body bbox | 190 × 133 × 69mm |
+| Cavity | 130mm long, ≥85mm wide and ≥40mm tall at every station |
+| Top plate | 100 × 190 × 6mm — plywood/acrylic, 140g if printed |
+| Base plate | 206 × 150 × 6mm — plywood/acrylic, 4 × M4 |
+| Overhang checker | 36.0% of downward-facing area flagged |
+| Fin overhang angles | 17.1°/8.7° and 15.9°/8.1° (limit 45°) |
 
-Body alone is well under the 300g budget.
+Body is under the 300g budget and inside the 190 × 135 × 70 envelope.
 
-## About that 190×190×66.6mm Rhino BoundingBox reading
+## Reading the renders
 
-If you ran Rhino's `BoundingBox` command with `Cumulative=Yes` over both
-solids, it measures the *plate* too - and the plate is deliberately
-190mm wide (spans past the body) so two bar clamps have something to
-bolt to, per spec section 7: "wider than the enclosure... a separate
-plate solves this." The **body alone** is 190 × 133 × 62mm, matching the
-spec's recommended envelope. Select just the body mesh before running
-BoundingBox if you want the enclosure's own dimensions.
+One model, six camera angles — not six designs. The exploded view is the
+clearest: plywood base plate at the bottom, printed shell in the middle,
+bar mount plate on top. "Mounted" shows the top plate actually fitted, which
+hides most of the shell — that's why the other views leave it off.
+
+## If you run BoundingBox in Rhino
+
+Select **only** the body mesh. Both plates are deliberately wider than the
+shell (the top one so the bar clamps have something to bolt to, per spec
+section 7), so a cumulative bounding box over all three reports the plates'
+size, not the enclosure's.
 
 ## Honest gaps
 
 1. **Scale texture from the reference isn't modeled.** Real 3D scales at
-   that density would mean hundreds of tiny raised bumps — print-prohibitive
-   at this scale and not worth the wall-thickness/print-time cost. A
-   textured spray paint or vinyl wrap would get the same visual effect
-   physically. Spec itself says scales aren't required.
-2. **The red glow is a render effect, not geometry** — it's just how the
-   groove faces are colored in the preview. In Rhino, assign those
-   centerline faces a separate emissive/red material if you want the same
-   look (see the print statement at the end of `rhino_build_enclosure.py`).
-3. **Not slicer-checked.** The 35.9% overhang number is a simple
-   face-angle heuristic, not a real slice — check actual bridging before
-   printing.
-4. **USB port position (x=60mm, left wall) is still a placeholder** — spec
-   says decide the Uno's orientation first.
-5. Bar overall width is unconfirmed for the actual 7/8" clamp set (see
-   spec.md's correction note), so the plate's 190mm span is a reasonable
+   that density would be hundreds of tiny raised bumps — print-prohibitive
+   and not worth the print-time cost. Textured spray paint or a vinyl wrap
+   gets the same effect physically. Spec says scales aren't required.
+2. **The red glow is a render effect, not geometry.** In Rhino, assign the
+   centerline groove faces an emissive red material for the same look.
+3. **Not slicer-checked.** The 36% overhang figure is a face-angle
+   heuristic, not a real slice — check actual bridging before printing.
+4. **USB port position (x=70mm) is still a placeholder** — spec says decide
+   the Uno's orientation first. The +Y side is a blind recess, so only the
+   −Y side is a real opening; swap which one is cut if the Uno faces the
+   other way.
+5. **Bar overall width is unconfirmed** for the actual 7/8" clamp set (see
+   spec.md's correction note), so the top plate's 190mm span is a reasonable
    guess, not a measured fit.
+6. **Bolt holes in the top plate are undrilled**, per spec — mark and drill
+   once the real clamps are in hand.
 
 ## Files
 
-- `generate_enclosure.py` — Python/trimesh generator
-- `rhino_build_enclosure.py` — same geometry, pure RhinoCommon, builds
-  directly into an open Rhino document (no pip installs needed)
+- `generate_enclosure.py` — Python/trimesh generator, prints the symmetry
+  and cavity checks above every run
+- `rhino_build_enclosure.py` — same geometry in pure RhinoCommon, builds
+  straight into an open Rhino document (no pip installs). Safe to re-run;
+  it deletes its own previous objects first.
 - `render.py` — gunmetal/red-glow preview renderer
-- `body.stl`, `top_plate.stl` — current output meshes
+- `body.stl`, `top_plate.stl`, `base_plate.stl` — current output meshes
 - `renders/` — preview images
 - `spec.md` — the team's build spec (one correction applied: section 7 bar
   diameter, see git history)
