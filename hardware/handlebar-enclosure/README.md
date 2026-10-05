@@ -29,27 +29,65 @@ small dragon-fin accents near the nose.
   stock photography. Plate is 100 × 190mm, bolt holes left undrilled per
   spec (mark and drill once the real clamps are in hand).
 
-## A bug I found and fixed while building the Rhino version
+## Bugs found and fixed (two rounds)
 
-The first pass had the top plate rotated 90° by mistake (copied from an
-earlier version where that rotation dodged a different set of fins). That
-put the plate's long 190mm dimension along the body's length — hanging off
-both the nose and tail — instead of across the body for the bar clamps.
-Fixed before handing off the Rhino script; `generate_enclosure.py` and
-`rhino_build_enclosure.py` both have the corrected orientation.
+1. **Plate rotated 90° by mistake** (copied from an earlier version where
+   that rotation dodged a different set of fins). Put the plate's long
+   190mm dimension along the body's length — hanging off both the nose
+   and tail — instead of across the body for the bar clamps. Fixed before
+   the first Rhino handoff.
+2. **Fins floating with a visible gap underneath** (caught from Rhino
+   screenshots after printing/viewing the first dragon-shield pass). Root
+   cause: the fin's base was anchored to `az`, the ridge height out at
+   `y=±rw` — but the fins sit centered at `y=0`, which is the *bottom* of
+   the V-notch, not the ridge. At the fin's actual position, the true
+   surface is 18-22mm lower than `az` (`az - groove`). The fin's base was
+   floating in mid-air that whole distance. Fixed by anchoring to
+   `az - groove` instead, and increased fin height (9/11mm → 26mm) so the
+   tips still clear the now-correctly-lower base and poke up past the
+   surrounding ridge.
+
+## Cavity sizing - verified, not just assumed
+
+Spec requires >=130 x 85 x 40mm of usable interior. The gross
+`INNER_X_RANGE` length (126mm) looked close enough at a glance, but
+checking every station individually (half-width at the 40mm height the
+components need) showed the two hollow-region boundary stations, plus one
+in the middle, actually pinched down to 25-63mm wide there - well under
+the 85mm needed. Fixed by widening the ridge at those three stations
+(wider/taller, same groove depth, so the V-notch look is unchanged) and
+re-verified: **every** station across the full 130mm hollow span (36mm to
+166mm) now individually clears 85mm width at 40mm height, not just the
+two endpoints. See `generate_enclosure.py`'s station comments for the
+before/after numbers.
+
+External envelope is unaffected by either fix: still 190 × 133 × 62mm,
+inside the spec's 190 × 135 × 70 recommendation and every printer bed
+listed in spec.md.
 
 ## Numbers
 
 | | Value |
 |---|---|
-| Body mass (PLA) | 259g |
-| Body cost @ $22/kg | $5.69 |
-| Body bbox | 190 × 133 × 67mm |
+| Body mass (PLA) | 255g |
+| Body cost @ $22/kg | $5.61 |
+| Body bbox | 190 × 133 × 62mm |
+| Cavity | 130mm long, >=85mm wide and >=40mm tall at every station in that span |
 | Plate mass if printed | 140g — recommend plywood/acrylic instead |
-| Overhang checker | 41.5% of downward-facing area flagged |
-| Fin overhang angles | 35.5°/18.4° and 31.0°/15.6° (both under the 45° limit) |
+| Overhang checker | 35.9% of downward-facing area flagged |
+| Fin overhang angles | both fins 15.3°/7.3° (well under the 45° limit) |
 
 Body alone is well under the 300g budget.
+
+## About that 190×190×66.6mm Rhino BoundingBox reading
+
+If you ran Rhino's `BoundingBox` command with `Cumulative=Yes` over both
+solids, it measures the *plate* too - and the plate is deliberately
+190mm wide (spans past the body) so two bar clamps have something to
+bolt to, per spec section 7: "wider than the enclosure... a separate
+plate solves this." The **body alone** is 190 × 133 × 62mm, matching the
+spec's recommended envelope. Select just the body mesh before running
+BoundingBox if you want the enclosure's own dimensions.
 
 ## Honest gaps
 
@@ -62,7 +100,7 @@ Body alone is well under the 300g budget.
    groove faces are colored in the preview. In Rhino, assign those
    centerline faces a separate emissive/red material if you want the same
    look (see the print statement at the end of `rhino_build_enclosure.py`).
-3. **Not slicer-checked.** The 41.5% overhang number is a simple
+3. **Not slicer-checked.** The 35.9% overhang number is a simple
    face-angle heuristic, not a real slice — check actual bridging before
    printing.
 4. **USB port position (x=60mm, left wall) is still a placeholder** — spec

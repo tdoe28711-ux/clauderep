@@ -20,16 +20,26 @@ PAD_X0, PAD_X1 = 50.0, 140.0
 WALL_T = 3.0
 
 # (x, bw, sw, sz, rw, az, groove)
+# NOTE on x=36/150/166: these are the INNER_X_RANGE hollow boundaries.
+# Originally (x=38 rw=10, x=150 rw=11, x=164 rw=8) they were narrow
+# enough that the interior didn't clear 85mm width at the 40mm height the
+# spec needs - checked numerically (half-width at z=40 came out to
+# 31/28/12mm, all failing the 42.5mm-half-width bar). Widened rw/az at
+# these three stations so the actual usable interior - not just the
+# gross INNER_X_RANGE span - clears 130x85x40 (verified below after
+# rebuilding). The V-notch (groove) is unchanged, so the dragon-seam
+# look is the same, just the ridge the groove cuts into is a bit wider
+# and taller at these specific stations.
 STATIONS = [
     (0.0,    7,  9,  6,  3, 12,  0.0),   # nose tip - low, narrow, sharp
     (14.0,  18, 24, 12,  7, 26,  7.0),   # nose rises, V starting to open
     (28.0,  40, 54, 21, 13, 46, 16.0),   # shoulder widens, deep V
-    (38.0,  56, 64, 25, 10, 58, 24.0),   # tall sharp ridge peak before the pad - deepest V
+    (36.0,  56, 64, 25, 32, 60, 24.0),   # tall ridge peak before the pad - widened for cavity clearance
     (46.0,  60, 66, 26, 36, 60,  6.0),   # ridge closes fast into the flat deck
     (50.0,  62, 66, 26, 40, 58,  0.0),   # pad front edge (flat)
     (140.0, 60, 65, 26, 40, 58,  0.0),   # pad back edge (flat)
-    (150.0, 58, 64, 25, 11, 54, 18.0),   # ridge resumes behind the pad
-    (164.0, 48, 58, 23,  8, 46, 16.0),   # rear ridge peak
+    (150.0, 58, 64, 25, 32, 59, 18.0),   # ridge resumes behind the pad - widened for cavity clearance
+    (166.0, 54, 62, 23, 34, 58, 16.0),   # rear ridge peak - widened for cavity clearance
     (178.0, 28, 36, 16, 10, 28,  8.0),   # tail taper
     (190.0, 18, 22, 13,  7, 18,  0.0),   # blunt tail transom
 ]
@@ -75,6 +85,9 @@ def check_overhangs(mesh, label):
     return pct
 
 def interp_station(x):
+    """Returns (bw, sw, sz, rw, az) - NOT groove; use interp_groove(x) too
+    if you need the true y=0 surface height (az - groove), since az alone
+    is the RIDGE height at y=+-rw, not the (lower, V-notched) centerline."""
     xs = [s[0] for s in STATIONS]
     if x <= xs[0]: return STATIONS[0][1:6]
     if x >= xs[-1]: return STATIONS[-1][1:6]
@@ -86,11 +99,30 @@ def interp_station(x):
             return tuple(a[j] + t * (b[j] - a[j]) for j in range(5))
     return STATIONS[-1][1:6]
 
+def interp_groove(x):
+    xs = [s[0] for s in STATIONS]
+    if x <= xs[0]: return STATIONS[0][6]
+    if x >= xs[-1]: return STATIONS[-1][6]
+    for i in range(len(STATIONS) - 1):
+        x0, x1 = xs[i], xs[i + 1]
+        if x0 <= x <= x1:
+            t = 0.0 if x1 == x0 else (x - x0) / (x1 - x0)
+            return STATIONS[i][6] + t * (STATIONS[i + 1][6] - STATIONS[i][6])
+    return STATIONS[-1][6]
+
 def build_dorsal_fin(x_center, proud_height, base_half=5.5, apex_back_offset=2.0,
                       thick_half=2.5, embed=1.5):
+    # BUG (found via Rhino screenshots - fins floating with a visible gap
+    # underneath): this used to anchor to `az`, the RIDGE height at
+    # y=+-rw. But the fin is centered at y=0, which sits in the bottom of
+    # the V-notch, not on the ridge - the real surface there is lower by
+    # the groove depth. Anchor to that instead so the fin's base actually
+    # touches solid material.
     bw, sw, sz, rw, az = interp_station(x_center)
-    base_z = az - embed
-    apex_z = az + proud_height
+    groove = interp_groove(x_center)
+    surface_z = az - groove
+    base_z = surface_z - embed
+    apex_z = surface_z + proud_height
     x_front, x_back = x_center - base_half, x_center + base_half
     x_apex = x_center + apex_back_offset
     pts = np.array([
@@ -107,7 +139,7 @@ hull, _, _, _, _ = build_hull(STATIONS)
 print(f"[hull] watertight={hull.is_watertight} volume={hull.volume/1000:.1f}cm^3 "
       f"bbox={(hull.bounds[1]-hull.bounds[0]).round(1)}")
 
-INNER_X_RANGE = (38.0, 164.0)
+INNER_X_RANGE = (36.0, 166.0)   # 130mm, now genuinely wide/tall enough end to end
 inner_stations = [
     (x, inset(bw, WALL_T), inset(sw, WALL_T), max(sz - WALL_T, 2.0), inset(rw, WALL_T), az - WALL_T, 0.0)
     for (x, bw, sw, sz, rw, az, groove) in STATIONS if INNER_X_RANGE[0] <= x <= INNER_X_RANGE[1]
@@ -141,7 +173,7 @@ usb_cut.apply_translation([usb_x, cut_cy, usb_z])
 shell = shell.difference(usb_cut, engine="manifold")
 
 print("front fins:")
-for fx, fh in [(31.0, 9.0), (36.0, 11.0)]:
+for fx, fh in [(31.0, 26.0), (36.0, 26.0)]:  # taller now that the base is correctly anchored low in the V-notch
     shell = shell.union(build_dorsal_fin(fx, fh), engine="manifold")
 
 shell.merge_vertices()
