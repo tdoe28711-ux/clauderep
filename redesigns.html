@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 Redesigns — Tyson Doering</title>
+<meta name="description" content="Three of Tyson Doering's older projects, Uni-Pal, Nest Green & Affordable and Muzzy, redesigned in 2026.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="transition.css">
+<style>
+.rd-top{max-width:780px;margin:0 auto;padding:0 24px}
+.rd-top h1{font-weight:600;font-size:clamp(34px,5.4vw,56px);letter-spacing:-.03em;line-height:1.06;margin:16px 0 22px}
+.rd-top p{color:#33363B;margin:1em 0}
+.rd-jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.rd-jump a{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;text-decoration:none;color:var(--ink-2);transition:border-color .2s,color .2s}
+.rd-jump a:hover{border-color:var(--ink);color:var(--ink)}
+.rd{max-width:1120px;margin:0 auto;padding:96px 24px 0;scroll-margin-top:60px}
+.rd-head{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-bottom:36px}
+.rd-num{font-family:'Work Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+.rd-head h2{font-size:clamp(28px,3.6vw,42px);line-height:1.08;margin:10px 0 10px}
+.rd-meta{font-size:14.5px;color:var(--ink-2)}
+.rd-head p{color:#33363B;margin:0 0 14px}
+.rd-head ul{margin:0 0 0 1.15em;color:#33363B}
+.rd-head li{margin:.3em 0}
+.rd-links{margin-top:18px;display:flex;gap:20px;flex-wrap:wrap}
+.rd-links a{font-weight:700;font-size:15px;text-decoration:none;border-bottom:1.5px solid currentColor;padding-bottom:2px}
+.rd-board{display:block;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 70px -36px rgba(12,13,15,.32);background:var(--panel)}
+.rd-board img{display:block;width:100%;height:auto}
+.rd-note{font-size:13.5px;color:var(--ink-2);margin-top:14px}
+.rd-end{max-width:780px;margin:96px auto 0;padding:34px 24px 20px;border-top:1px solid var(--line)}
+.rd-end p{color:var(--ink-2);font-size:15.5px}
+@media(max-width:860px){.rd-head{grid-template-columns:1fr;gap:18px}.rd{padding-top:72px}}
+</style>
+</head>
+<body>
+<header class="site" id="hdr"><div class="wrap">
+  <a class='logo' href='/'>Tyson Doering</a>
+  <nav class="top">
+    <a class='hide-m' href='/#work'>Work</a>
+    <a class='hide-m' href='/#redesigns'>Redesigns</a>
+    <a class='hide-m' href='/#about'>About</a>
+    <a class="pill dark" href="mailto:tdoe28711@gmail.com">Email me</a>
+  </nav>
+</div></header>
+
+<article class="case">
+  <div class="rd-top">
+    <a class='crumb' href='/#redesigns'>← Back home</a>
+    <div style="margin-top:24px"><span class="kicker">Personal redesigns · 2026</span></div>
+    <h1>Three projects, redesigned in 2026</h1>
+    <p>Looking back at some of my older projects, I could tell how much I've grown as a designer since I made them. So I went back and redesigned three of them to match the kind of work I do now.</p>
+    <p>The original ideas and research stay the same. What changed is the visual design, the layouts and how the screens are built. These are personal updates I did on my own, not new class projects, and I didn't run new usability tests on them.</p>
+    <div class="rd-jump">
+      <a href="#unipal">Uni-Pal</a>
+      <a href="#nest">Nest, Green &amp; Affordable</a>
+      <a href="#muzzy">Muzzy</a>
+    </div>
+  </div>
+
+  <section class="rd" id="unipal">
+    <div class="rd-head">
+      <div>
+        <span class="rd-num">01 · Mobile app</span>
+        <h2>Uni-Pal</h2>
+        <p class="rd-meta">Originally UXDG 101 · UX design lead on a 5-person team</p>
+      </div>
+      <div>
+        <p>Uni-Pal was my first UX project, and it looked like it. I rebuilt every screen on a real design system with shared colors, type and components, so every flow feels like the same app. I kept the original brand and the bee, just cleaned everything up to current iOS standards.</p>
+        <ul>
+          <li>79 screens rebuilt on one design system</li>
+          <li>Meal swipes and dining dollars moved up front on Home</li>
+          <li>Clearer flows for dining, recipes, chat and settings</li>
+          <li>Original brand and mascot kept, just modernized</li>
+        </ul>
+        <div class="rd-links"><a href="/unipal">See the original case study →</a></div>
+      </div>
+    </div>
+    <a class="rd-board" href="images/redesigns/unipal-2026.jpg" target="_blank" rel="noopener"><img src="images/redesigns/unipal-2026.jpg" alt="Uni-Pal 2026 redesign: Home, Eat, restaurant, recipe and chat screens next to the new design system" width="2000" height="3431" loading="lazy"></a>
+  </section>
+
+  <section class="rd" id="nest">
+    <div class="rd-head">
+      <div>
+        <span class="rd-num">02 · Companion app</span>
+        <h2>Nest, Green &amp; Affordable</h2>
+        <p class="rd-meta">Originally UXDG 315 · Design lead on a 7-person team</p>
+      </div>
+      <div>
+        <p>For Green &amp; Affordable I focused on the companion app. I wanted a calmer layout where the temperature is the first thing you see and your energy use is easy to understand. The thermostat designs on the board are the originals from the team project.</p>
+        <ul>
+          <li>Clearer temperature hierarchy</li>
+          <li>Routines you can read at a glance</li>
+          <li>Presets that are easier to reach</li>
+          <li>Energy insights that suggest a next step</li>
+        </ul>
+        <div class="rd-links"><a href="/nest">See the original case study →</a></div>
+      </div>
+    </div>
+    <a class="rd-board" href="images/redesigns/nest-2026.jpg" target="_blank" rel="noopener"><img src="images/redesigns/nest-2026.jpg" alt="Nest companion app 2026 redesign: home, schedule, energy, presets and edit routine screens, with the original thermostat designs" width="2000" height="3297" loading="lazy"></a>
+  </section>
+
+  <section class="rd" id="muzzy">
+    <div class="rd-head">
+      <div>
+        <span class="rd-num">03 · Website</span>
+        <h2>Muzzy</h2>
+        <p class="rd-meta">Website concept for Telfair Museums, Savannah</p>
+      </div>
+      <div>
+        <p>Muzzy is a website concept for Telfair Museums. I refreshed the homepage, the shop and a product page with a more editorial look built around the art, and designed a mobile version of the homepage.</p>
+        <ul>
+          <li>Editorial layout that lets the art lead</li>
+          <li>Simpler shop with clearer product cards</li>
+          <li>Cleaner product page with sizes and add to bag</li>
+          <li>Mobile homepage</li>
+        </ul>
+      </div>
+    </div>
+    <a class="rd-board" href="images/redesigns/muzzy-2026.jpg" target="_blank" rel="noopener"><img src="images/redesigns/muzzy-2026.jpg" alt="Muzzy 2026 redesign: Telfair Museums homepage, shop and product page in browser windows, and the mobile homepage on a phone" width="2000" height="2608" loading="lazy"></a>
+    <p class="rd-note">Student concept. Not affiliated with or endorsed by Telfair Museums.</p>
+  </section>
+
+  <div class="rd-end">
+    <p>Click any board to open it full size.</p>
+  </div>
+  <div class="case-next"><a href='/unipal'>Next: Uni-Pal case study →</a></div>
+</article>
+
+<div class="wrap"><div class="cta-card">
+  <h2>Questions about this work?</h2>
+  <p>I'm happy to walk through what I changed and why.</p>
+  <a class="pill dark" href="mailto:tdoe28711@gmail.com">Email me</a>
+</div></div>
+<footer class="site"><div class="wrap"><span>© 2026 Tyson Doering</span><span>Savannah, GA</span></div></footer>
+<script>
+const h=document.getElementById('hdr');
+addEventListener('scroll',()=>h.classList.toggle('scrolled',scrollY>10),{passive:true});
+</script>
+<script src="transition.js"></script>
+</body></html>

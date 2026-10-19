@@ -82,6 +82,17 @@ h1 .hl{color:var(--uni)}
 .shot{aspect-ratio:4/3;border-radius:10px;background:rgba(255,255,255,.08);overflow:hidden}
 .shot img{width:100%;height:100%;object-fit:cover}
 
+.redo{padding:16px 0 0}
+.redo-grid{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.redo-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 14px 26px;text-decoration:none;display:flex;flex-direction:column;transition:transform .45s var(--ease),border-color .3s ease}
+.redo-card:hover{transform:translateY(-4px);border-color:rgba(17,17,16,.28)}
+.redo-img{aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:#E3E1DA;margin-bottom:22px}
+.redo-img img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .6s var(--ease)}
+.redo-card:hover .redo-img img{transform:scale(1.03)}
+.redo-card .lab{font-family:'Work Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 12px 12px}
+.redo-card h4{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.022em;line-height:1.15;margin:0 12px 8px}
+.redo-card p{font-size:15px;color:var(--soft);line-height:1.55;margin:0 12px}
+.redo-all{display:inline-block;margin-top:28px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--uni);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.28}}
 .about{padding:120px 0 0}
@@ -125,6 +136,7 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
   .panel{padding:30px 24px}
   .panel .grid{grid-template-columns:1fr;gap:26px}
   .bento{grid-template-columns:1fr}
+  .redo-grid{grid-template-columns:1fr}
   .cta-card{padding:52px 24px}
   .strip{gap:18px;flex-direction:column}
 }
@@ -144,6 +156,7 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
     <a class='name' href='/'>Tyson Doering</a>
     <span class="links">
       <a href="#work" class="hide-m">Work</a>
+      <a href="#redesigns" class="hide-m">Redesigns</a>
       <a href="#about" class="hide-m">About</a>
       <a class="btn" href="mailto:tdoe28711@gmail.com">Email me</a>
     </span>
@@ -250,6 +263,40 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
   </a>
 
 </div>
+
+<section class="redo" id="redesigns">
+  <div class="sec-head rev" style="padding-bottom:0">
+    <h2>2026 redesigns</h2>
+    <span class="mono">Three projects, revisited</span>
+  </div>
+  <div class="lead rev">
+    <h3>Older projects, redesigned to match the work I do now.</h3>
+    <div class="aside">
+      <p>Same ideas and research, updated visuals and layouts. These are personal updates, not new class work.</p>
+    </div>
+  </div>
+  <div class="redo-grid rev">
+    <a class="redo-card" href="/redesigns#unipal">
+      <div class="redo-img"><img src="images/redesigns/unipal-2026-thumb.jpg" alt="Uni-Pal 2026 redesign screens" loading="lazy" width="1200" height="750"></div>
+      <span class="lab">Mobile app</span>
+      <h4>Uni-Pal</h4>
+      <p>79 screens rebuilt on one design system.</p>
+    </a>
+    <a class="redo-card" href="/redesigns#nest">
+      <div class="redo-img"><img src="images/redesigns/nest-2026-thumb.jpg" alt="Nest companion app 2026 redesign screens" loading="lazy" width="1200" height="750"></div>
+      <span class="lab">Companion app</span>
+      <h4>Nest, Green &amp; Affordable</h4>
+      <p>A calmer app with clearer energy insights.</p>
+    </a>
+    <a class="redo-card" href="/redesigns#muzzy">
+      <div class="redo-img"><img src="images/redesigns/muzzy-2026-thumb.jpg" alt="Muzzy museum website 2026 redesign on desktop and mobile" loading="lazy" width="1200" height="750"></div>
+      <span class="lab">Website</span>
+      <h4>Muzzy</h4>
+      <p>A more editorial museum site, desktop and mobile.</p>
+    </a>
+  </div>
+  <a class="pill-l redo-all rev" href="/redesigns">See all the new snapshots &rarr;</a>
+</section>
 
 <section class="about" id="about">
   <div class="sec-head rev" style="padding-bottom:0">
