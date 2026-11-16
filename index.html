@@ -19,6 +19,7 @@
   --nest:#12352A; --nest-t:#93D6B7;
   --tp:#3A2266;   --tp-t:#D0B6F2;
   --sec:#14223F;  --sec-t:#C3CFF0;
+  --sc:#1C1B1A;   --sc-t:#F6C4A6;
   --ease:cubic-bezier(.2,.7,.3,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -68,6 +69,7 @@ h1 .hl{color:var(--uni)}
 .p2{background:var(--nest);color:var(--nest-t)}
 .p3{background:var(--tp);color:var(--tp-t)}
 .p4{background:var(--sec);color:var(--sec-t)}
+.p5{background:var(--sc);color:var(--sc-t)}
 .panel .grid{display:grid;grid-template-columns:1fr .88fr;gap:46px;align-items:center}
 .panel .tag{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;opacity:.72;margin-bottom:24px}
 .panel h3{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:600;font-size:clamp(25px,3.5vw,46px);line-height:1.05;letter-spacing:-.022em;max-width:17ch}
@@ -189,10 +191,27 @@ footer{padding:44px 0 60px;display:flex;justify-content:space-between;font-famil
 
 <section class="sec-head rev" id="work">
   <h2>Featured work</h2>
-  <span class="mono">Four case studies</span>
+  <span class="mono">Five case studies</span>
 </section>
 
 <div class="panels">
+
+  <a class='panel p5 rev' href='/soundcloud'>
+    <div class="grid">
+      <div>
+        <p class="tag">SoundCloud — UX researcher &amp; designer, 2026</p>
+        <h3>Why Spotify users get stuck on SoundCloud, and what fixed it</h3>
+        <p class="meta">A 10-week usability study with 14 Spotify users across three rounds, and a redesign that fixed skipping and saving.</p>
+        <div class="chips">
+          <span class="chip">UX research</span>
+          <span class="chip">Usability testing</span>
+          <span class="chip">14 participants</span>
+        </div>
+        <span class="go">View case study <i>&rarr;</i></span>
+      </div>
+      <div class="shot"><img src="images/soundcloud/hero-card.jpg" alt="Screens from the redesigned SoundCloud prototype: player controls, a saved song, and one Save button"></div>
+    </div>
+  </a>
 
   <a class='panel p1 rev' href='/unipal'>
     <div class="grid">

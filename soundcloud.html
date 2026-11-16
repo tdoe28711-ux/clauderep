@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SoundCloud for Spotify Switchers | Usability Research | Tyson Doering</title>
+<meta name="description" content="A 10-week usability study on why Spotify users get stuck on SoundCloud, and a redesign tested with 14 people across three rounds.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="transition.css">
+<style>
+.sc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0 8px}
+.sc-stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:20px 18px}
+.sc-stat b{display:block;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:700;font-size:30px;letter-spacing:-.03em;line-height:1.1;color:var(--ink)}
+.sc-stat span{display:block;font-size:14px;line-height:1.4;color:var(--ink-2);margin-top:8px}
+.sc-role{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+.sc-role div{background:var(--panel);border-radius:var(--r-md);padding:22px}
+.sc-role h3{font-size:17px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+.sc-role p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
+.sc-cap{font-size:14px;color:var(--ink-2);margin:-10px 0 26px}
+.case-inner h2+.sc-lead{font-size:19px;color:var(--ink)}
+@media(max-width:760px){.sc-stats{grid-template-columns:repeat(2,1fr)}.sc-role{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site" id="hdr"><div class="wrap">
+  <a class='logo' href='/'>Tyson Doering</a>
+  <nav class="top">
+    <a class='hide-m' href='/#work'>Work</a>
+    <a class='hide-m' href='/#redesigns'>Redesigns</a>
+    <a class='hide-m' href='/#about'>About</a>
+    <a class="pill dark" href="mailto:tdoe28711@gmail.com">Email me</a>
+  </nav>
+</div></header>
+<article class="case">
+  <div class="case-inner">
+    <a class='crumb' href='/#work'>← All work</a>
+    <div style="margin-top:24px"><span class="kicker">UX Research · Usability Testing</span></div>
+    <h1>Why Spotify users get stuck on SoundCloud, and what fixed it</h1>
+<p><strong>Role: UX Researcher and Designer</strong> · 3-person team · 10 weeks · UXDG 380</p>
+<p><img alt="Screens from the redesigned SoundCloud prototype: player controls, a saved song, one Save button, and an ad in the mini player" src="images/soundcloud/hero.png" /></p>
+
+<h2>Overview</h2>
+<p class="sc-lead">SoundCloud has music Spotify doesn't. But Spotify users who try it get stuck on the basics, like skipping a song or saving one.</p>
+<p>Our three-person team tested the real app with Spotify users, redesigned the parts that broke their habits, and tested the redesign twice. I moderated a session, designed a test prototype, set up and piloted the unmoderated study, and pulled 14 sessions into the findings below.</p>
+<div class="sc-stats">
+  <div class="sc-stat"><b>14</b><span>Spotify users tested across three rounds</span></div>
+  <div class="sc-stat"><b>4 of 5 → 0 of 4</b><span>weren't sure their song saved</span></div>
+  <div class="sc-stat"><b>5 of 5 → 0 of 4</b><span>got stuck waiting on an ad</span></div>
+  <div class="sc-stat"><b>2 of 5 → 0 of 4</b><span>couldn't change songs on their own</span></div>
+</div>
+<p class="sc-cap">Real app (5 moderated sessions) compared to our redesign (unmoderated Round 2, 4 people). Small groups, so these are strong signals and not final proof.</p>
+
+<h2>The challenge</h2>
+<p>People come to SoundCloud for songs they can't find anywhere else. Then years of Spotify habits get in the way. If someone can't control or keep the first song they play, the catalog doesn't matter, and they go back to Spotify.</p>
+<p>We wanted to know where Spotify users get stuck in their first session, and whether small changes that match what they already know would fix it.</p>
+
+<h2>My role</h2>
+<p>The research was a team effort. These are the parts I owned.</p>
+<div class="sc-role">
+  <div><h3>Moderated a session</h3><p>I ran one of our five moderated think-aloud sessions on the real SoundCloud app, start to finish.</p></div>
+  <div><h3>Designed a test prototype</h3><p>I built a Figma prototype where one heart saves the song, the way Spotify users expect it to.</p></div>
+  <div><h3>Set up and piloted the study</h3><p>I set up the unmoderated test and screener in UserTesting and ran two pilots before launch.</p></div>
+  <div><h3>Synthesis and final story</h3><p>I grouped quotes from all 14 sessions into an affinity map and worked on the final presentation and appendix.</p></div>
+</div>
+<p><img alt="Four screens from my Figma prototype" src="images/soundcloud/my-prototype.png" /></p>
+<p class="sc-cap">My Figma prototype. Piloting it caught two problems before launch: a button on the saved message that did nothing, and a task that didn't say when it was done. I fixed both.</p>
+
+<h2>Research approach</h2>
+<ul>
+<li><strong>Heuristic review.</strong> We checked the real app first to predict where people would struggle, then rated each issue by severity.</li>
+<li><strong>5 moderated sessions on the real app.</strong> We needed to hear why people got stuck, so we watched Spotify users think out loud.</li>
+<li><strong>Redesign.</strong> We changed only what the sessions showed was broken.</li>
+<li><strong>2 unmoderated rounds on our prototype (5 and 4 people).</strong> No moderator to help, so we could see if the fixes worked on their own. We kept the tasks the same in both rounds so we could compare.</li>
+</ul>
+<p><img alt="Affinity map groups: Controls aren't where Spotify put them, and Heart doesn't mean save" src="images/soundcloud/affinity.png" /></p>
+<p class="sc-cap">Two of the 13 groups from the affinity map. Each sticky is one thing a participant said or did, colored by person and round.</p>
+
+<h2>Key findings</h2>
+<p><strong>1. Skip isn't where Spotify users look for it.</strong> 4 of 5 looked at the bottom of the screen, where Spotify puts it. SoundCloud's full player has no pause or skip buttons.</p>
+<p><img alt="4 of 5 looked at the bottom for skip. 3 of 5 changed songs on their own." src="images/soundcloud/finding-skip.png" /></p>
+<p><strong>2. The heart doesn't feel like saving.</strong> On Spotify the heart saves a song. On SoundCloud it's only a like. 4 of 5 weren't sure it saved anything.</p>
+<p><img alt="Quote: I didn't know that necessarily saved anything." src="images/soundcloud/finding-heart.png" /></p>
+<p><strong>3. Ads freeze the app.</strong> 5 of 5 had to stop and wait out an ad. The ad itself bothered people less than being stuck.</p>
+<p><strong>4. What already worked.</strong> 5 of 5 went straight to Library to find saved music, because it works like Spotify. We left it alone.</p>
+
+<h2>What we changed</h2>
+<ul>
+<li><strong>Back, pause and next buttons</strong> under the waveform, where Spotify users already look.</li>
+<li><strong>One Save button.</strong> Our first version kept the heart and added Save. Having both confused 3 of 5 people in Round 1, so we removed the heart for Round 2.</li>
+<li><strong>Ads in the mini player,</strong> so people can keep using the app while one plays.</li>
+</ul>
+<p><img alt="Round 1 prototype with a heart and a Save button next to the Round 2 prototype with one Save button" src="images/soundcloud/save-before-after.png" /></p>
+
+<h2>Outcomes</h2>
+<p><img alt="Round 1 to Round 2: skip held up, save fixed, finding it the next day fixed, ads still open, artist got worse" src="images/soundcloud/rounds.png" /></p>
+<p>Three fixes held up across both rounds. Two things are still open, and we said so:</p>
+<ul>
+<li><strong>After an ad,</strong> only 2 of 4 were sure what would play next.</li>
+<li><strong>Getting to the artist page</strong> got worse in Round 2, because the tappable artist name we planned didn't make the build.</li>
+</ul>
+<p><strong>Our recommendation:</strong> add the player buttons and one Save button now. Finish the ad flow and the artist link, then test again.</p>
+
+<h2>Impact</h2>
+<p>Skipping and saving happen on every song, and saved songs are what bring people back. Fixing those two removes the first reasons a Spotify user gives up.</p>
+<p>The research also showed where design stops mattering. People rated the redesign easy to use, but still landed around 5 out of 11 on switching. What held them back was price, ads, and moving their library over. That gave the team a clear next thing to prototype: importing Spotify playlists at sign-up.</p>
+
+<h2>Reflection</h2>
+<p>Next time I'd pilot on a real phone with the timer running. In Round 2 the ad ended while some people were still reading the task, so part of that result came from our test and not the design. I'd also build the tappable artist name before testing it, not after.</p>
+  </div>
+  <div class="case-next"><a href='/unipal'>Next case study: Uni-Pal →</a></div>
+</article>
+<div class="wrap"><div class="cta-card">
+  <h2>Questions about this work?</h2>
+  <p>I'm happy to walk through the decisions, the data, and what I'd do differently.</p>
+  <a class="pill dark" href="mailto:tdoe28711@gmail.com">Email me</a>
+</div></div>
+<footer class="site"><div class="wrap"><span>© 2026 Tyson Doering</span><span>Savannah, GA</span></div></footer>
+<script>
+const h=document.getElementById('hdr');
+addEventListener('scroll',()=>h.classList.toggle('scrolled',scrollY>10),{passive:true});
+</script>
+<script src="transition.js"></script>
+</body></html>

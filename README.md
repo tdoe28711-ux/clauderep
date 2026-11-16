@@ -6,12 +6,13 @@ Plain static site: no build step, no framework.
 
 | File | Page |
 | --- | --- |
-| `index.html` | Home — Work, Now, About |
+| `index.html` | Home — Work, Redesigns, About |
+| `soundcloud.html` | SoundCloud usability research case study (`/soundcloud`) |
 | `unipal.html` | Uni-Pal case study (`/unipal`) |
 | `nest.html` | Nest Thermostat case study (`/nest`) |
 | `treylor-park.html` | Treylor Park Pizza Party case study (`/treylor-park`) |
 | `sec-today-live.html` | SEC Today Live poster case study (`/sec-today-live`) |
-| `styles.css` | Shared styles (Fraunces + Work Sans from Google Fonts) |
+| `styles.css` | Shared styles (Plus Jakarta Sans + Work Sans from Google Fonts) |
 | `transition.css`, `transition.js` | Page fade transition between pages |
 | `images/` | Headshot and per-project images |
 
